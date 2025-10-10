@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "mcp-server-memory"
+    },
+    "sequential-thinking": {
+      "command": "mcp-server-sequential-thinking"
+    },
+    "filesystem": {
+      "command": "mcp-server-filesystem",
+      "args": ["/Users/cavin/Desktop/dev/leapacp"]
+    },
+    "github": {
+      "command": "mcp-server-github",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
