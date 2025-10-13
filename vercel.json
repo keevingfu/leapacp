@@ -1,8 +1,7 @@
 {
-  "buildCommand": "cd frontend && npm install && mv tsconfig.json tsconfig.json.bak && npm run build && mv tsconfig.json.bak tsconfig.json || true",
+  "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "installCommand": "npm install --prefix frontend",
-  "devCommand": "cd frontend && npm run dev",
   "rewrites": [
     {
       "source": "/(.*)",
