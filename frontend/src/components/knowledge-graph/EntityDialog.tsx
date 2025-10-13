@@ -46,7 +46,7 @@ export function EntityDialog({ open, onOpenChange, entity }: EntityDialogProps) 
     if (entity) {
       await updateMutation.mutateAsync({
         id: entity.id,
-        properties
+        data: { type: entityType, properties }
       })
     } else {
       await createMutation.mutateAsync({
