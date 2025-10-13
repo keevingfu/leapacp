@@ -1,4 +1,343 @@
-Cool, 我想先从前端开始，也就是先根据项目的整个业务流程，通过不同角色使用平台的角度出发来构建所有前端应用交互页面，前端应用交互页面可以参考“leap - acp - portal.tsx”文件，不用全部照搬该文件，要根据项目整体结构来生成对应功能模块的应用交互页面。然后再基于前端交互页面和后端业务数据结构来构建逐渐完善后端的开发，请根据这个方向从新调整开发计划，并能保障每次执行完任务都要对项目是否可以运行进行检查。import React, { useState, useEffect } from 'react';
+Cool, 我想先从前端开始，也就是先根据项目的整个业务流程，SweetNight Amazon商品详情页GEO优化详细SOP
+概述
+本SOP专门针对SweetNight Amazon平台商品详情页进行深度GEO优化，确保在Amazon Rufus AI、ChatGPT等AI购物助
+手中获得最大化推荐率和转化效果。随着Amazon Rufus AI在2025年的全面升级，包括Shopping Memory、多模态理解等
+新特性，本优化方案将帮助SweetNight抢占AI购物时代的市场先机。
+10步骤详细工作流程
+Step 1: Amazon生态审计(6小时)
+执行角色: Amazon运营专家
+主要任务:
+Amazon算法分析: 深度研究A9 / A10算法机制和排名因素
+Rufus AI机制研究: 理解AI推荐逻辑和触发条件
+竞品ASIN对标: 分析同类产品的优化策略和表现
+类目排名分析: 评估当前市场地位和优化空间
+使用工具:
+Helium 10(Market Analysis)
+Jungle Scout(Product Research)
+AMZScout(Competitor Analysis)
+Amazon Brand Analytics
+质量标准:
+竞品分析100 % 覆盖
+Rufus机制理解深度 > 90 %
+  类目机会识别准确
+Rufus AI优化重点: 深度理解AI推荐机制，为后续优化奠定基础
+Step 2: Product Title优化(8小时)
+执行角色: Amazon文案专家
+核心策略: Intent - based标题设计，匹配用户自然语言查询
+优化前后对比:
+CoolNest™ 床垫:
+❌ 优化前: "SweetNight CoolNest Mattress Queen Size"
+✅ Rufus优化: "SweetNight CoolNest Cooling Mattress - 8°C Cooler Sleep for Hot Sleepers | 5-Zone Support System
+  | Queen 12" - CertiPUR-US"
+Twilight Hybrid 床垫:
+❌ 优化前: "SweetNight Twilight Hybrid Mattress King"
+✅ Rufus优化: "SweetNight Twilight Hybrid Mattress - Cloud Plush Comfort for Back Pain Relief | Gel Memory Foam
+  + Coils | King 14" - Breathable"
+标题优化原则:
+1. 品牌识别: SweetNight品牌前置
+2. 产品类型: 明确产品类别和型号
+3. 核心卖点: 突出最重要的差异化特性
+4. 目标用户: 明确适用人群
+5. 技术特性: 关键技术参数
+6. 规格信息: 尺寸和厚度
+7. 权威认证: 相关认证标识
+使用工具:
+ChatGPT(标题生成和优化)
+Helium 10 Scribbles(关键词密度检查)
+MerchantWords(关键词研究)
+Keyword Tool(长尾词发现)
+质量标准:
+自然语言流畅度 > 95 %
+  关键词匹配度 > 85 %
+  Rufus AI查询触发率显著提升
+Step 3: Bullet Points改写(10小时)
+执行角色: Amazon文案专家
+核心策略: Feature→Benefit转化，系统性解决用户问题
+5个Bullet Points优化框架:
+Bullet Point 1: 核心问题解决
+CoolNest™ 示例:
+"✓ ELIMINATE NIGHT SWEATS: CoolNest™ technology keeps you 8°C cooler with 10,000 micro-vents and PCM
+particles for sweat - free sleep all night"
+Bullet Point 2: 技术特性说明
+CoolNest™ 示例:
+"✓ 6-LAYER COOLING SYSTEM: CoolNest™ Cover + PCMflux™ Foam + Gel Memory Foam + 5-Zone Support creates
+the ultimate cooling mattress"
+Bullet Point 3: 用户益处强化
+CoolNest™ 示例:
+"✓ WAKE UP REFRESHED: No more flipping pillows or kicking off blankets - enjoy deep, uninterrupted sleep with
+consistent cooling comfort"
+Bullet Point 4: 社会证明和权威背书
+CoolNest™ 示例:
+"✓ TRUSTED QUALITY: CertiPUR-US certified foam, OEKO-TEX fabric, 4.7/5 rating from 219+ verified buyers,
+recommended by sleep experts"
+Bullet Point 5: 购买保障和行动号召
+CoolNest™ 示例:
+sleep tonight"
+"✓ RISK-FREE PURCHASE: 100-night sleep trial, 10-year warranty, free shipping, 0% APR financing - start your coolest
+Rufus AI优化要点:
+回答"What are the benefits of..."类问题
+解决"How does [product] solve [problem]"查询
+提供具体数据和量化益处
+使用自然语言表达方式
+Step 4: Product Description重构(8小时)
+执行角色: Amazon内容专家
+核心策略: HTML结构化内容，便于Rufus AI解析和理解
+HTML结构化内容框架:
+<h3>Why Choose CoolNest™ Over Traditional Memory Foam?</h3>
+<p>Traditional memory foam traps heat and causes night sweats. <strong>CoolNest™ revolution
+<h4> Advanced Cooling Technology</h4>
+<ul>
+<li><strong>CoolNest™ Cover:</strong> 3D weaving with 10,000 micro-vents (35% more airflow)
+<li><strong>PCMflux™ Foam:</strong> Phase-change materials + hollow structure (3X breathabi
+<li><strong>Gel-Infused Memory Foam:</strong> Continuous heat dissipation and pressure reli
+</ul>
+<h4> 5-Zone Ergonomic Support</h4>
+<p>Unlike generic mattresses, CoolNest™ features <strong>targeted support zones</strong> fo
+<h4> Clinical Testing Results</h4>
+<p><strong>Independent lab testing proves:</strong> 8°C cooler surface temperature, 40% red
+<h4> Certifications &amp; Warranties</h4>
+<ul>
+<li>CertiPUR-US certified foam (no harmful chemicals)</li>
+<li>OEKO-TEX 100 fabric certification</li>
+<li>100-night risk-free sleep trial</li>
+<li>10-year manufacturer warranty</li>
+</ul>
+Rufus AI优化价值:
+结构化内容便于AI提取关键信息
+FAQ式问答格式直接回答用户疑问
+技术参数+用户益处并重
+权威数据增强可信度
+Step 5: Backend Keywords优化 (4小时)
+执行角色: Amazon SEO专员
+核心策略: 249字符最大化利用，覆盖语义相关词和长尾关键词
+关键词分类体系:
+核心关键词 (40%)
+cooling mattress, memory foam mattress, hybrid mattress
+hot sleepers, night sweats, temperature regulation
+长尾关键词 (35%)
+mattress for hot sleepers under 400, best cooling mattress 2025
+8 degrees cooler mattress, back pain relief mattress
+语义相关词 (15%)
+breathable, ventilated, gel infused, PCM technology
+pressure relief, spinal alignment, motion isolation
+竞品相关词 (10%)
+tempur pedic alternative, purple mattress competitor
+casper cooling, tuft needle breathable
+CoolNest™ Backend Keywords示例:
+cooling mattress queen size hot sleepers night sweats temperature regulation 8 degrees cool
+使用工具:
+Helium 10 Cerebro (竞品关键词分析)
+MerchantWords (搜索量数据)
+Amazon Brand Analytics (真实用户搜索词)
+Step 6: A+ Content制作 (12小时)
+执行角色: Amazon设计师
+核心策略: 6个模块系统展示产品价值，支持多模态AI理解
+Module 1: 产品概述
+布局设计: 左图右文，大图展示
+CoolNest™ 内容:
+主视觉: CoolNest床垫6层剖面图
+核心标题: "8°C Cooler Sleep Technology"
+三大卖点: "5-Zone Support" + "CertiPUR-US Certified" + "100-Night Trial"
+Module 2: 技术解析
+布局设计: 上图下文，技术图表
+CoolNest™ 内容:
+技术图解: 6层结构详细说明
+数据展示: "CoolNest™ Cover: 35% More Airflow"
+科学原理: "PCMflux™ Foam: 3X Breathability"
+Module 3: 使用场景
+布局设计: 三栏生活场景
+CoolNest™ 内容:
+场景1: 夫妻安睡，无热醒困扰
+场景2: 各种睡姿完美支撑
+场景3: 温度对比图表展示
+Module 4: 用户评价
+布局设计: 卡片式用户见证
+CoolNest™ 内容:
+用户A: "Sleep 8 degrees cooler!" ★★★★★
+用户B: "Back pain completely gone!" ★★★★★
+用户C: "Best investment for quality sleep!" ★★★★★
+Module 5: 规格对比
+布局设计: 表格式竞品对比
+CoolNest™ 对比表:
+特性 CoolNest™ Traditional Gel Foam
+冷却效果 8°C Cooler 标准 2°C Cooler
+支撑系统 5-Zone 单一 单一
+透气性 3X Better 标准 1.5X Better
+价格优势 $349 $500+ $450+
+布局设计: 底部横幅式保障展示
+保障内容:
+Module 6: 购买保障
+100-Night Sleep Trial
+10-Year Warranty
+Free Shipping
+0% APR Financing
+24/7 Customer Support
+Step 7: Product Images优化 (8小时)
+执行角色: Amazon摄影师
+核心策略: 9张图片系统展示，支持视觉搜索和场景识别
+图片规格标准:
+主图: 1500x1500px, 白底, RGB色彩
+辅助图: 1000x1000px, 生活场景, 信息图
+图片序列规划:
+1. 主图: 白底产品图 + 品牌logo + 关键认证标识
+2. 剖面图: 6层结构展示 + 技术标注 + 材料说明
+3. 使用场景图: 卧室环境 + 用户睡眠状态 + 温馨氛围
+4. 细节特写: 面料纹理 + 工艺展示 + 质感体现
+5. 尺寸对比图: 床垫尺寸 + 房间比例 + 选择指南
+6. 包装配送图: 压缩包装 + 配送过程 + 安装简易
+7. 认证证书图: CertiPUR-US + OEKO-TEX + 质量保证
+8. 用户评价图: 真实评价截图 + 星级展示 + 数量统计
+9. 品牌故事图: 公司介绍 + 15年经验 + 全球服务
+Rufus AI视觉优化:
+场景识别: 真实卧室环境，便于AI理解使用场景
+产品识别: 清晰产品特征，支持视觉搜索匹配
+信息提取: 文字信息清晰可读，便于AI解析
+Step 8: Q&A系统建立 (6小时)
+执行角色: 客服运营
+核心策略: 20+预设问答，专业回答覆盖购买全流程疑虑
+核心Q&A示例:
+Q: How much cooler is CoolNest™ compared to regular mattresses?
+A: Independent laboratory testing shows CoolNest™ maintains an 8°C (14.4°F) cooler sleep surface compared to
+traditional memory foam mattresses. This is achieved through our proprietary 6-layer cooling system including
+CoolNest™ Cover with 10,000 micro-vents, PCMflux™ foam with phase-change materials, and gel-infused memory foam
+layers.
+Q: Is CoolNest™ suitable for all sleep positions?
+A: Absolutely! CoolNest™ features a 5-zone ergonomic support system specifically designed for back, side, and stomach
+sleepers. The targeted comfort zones for head, shoulders, back, hips, and legs ensure optimal spinal alignment
+regardless of your preferred sleep position.
+Q: What's included with my CoolNest™ purchase?
+A: Your complete package includes: CoolNest™ Mattress in your chosen size, 100-night risk-free sleep trial, 10-year
+manufacturer warranty, FREE shipping and white-glove delivery, 0% APR financing options, and 24/7 customer support
+access.
+Q: How does the 100-night trial work?
+A: Try CoolNest™ risk-free for 100 nights in your own home. If you're not completely satisfied, contact our customer
+service team for a full refund and free mattress pickup. We recommend sleeping on it for at least 30 nights to allow your
+body to adjust to the new support system.
+Rufus AI优化价值:
+直接回答"How to use..."类查询
+提供权威专业建议
+减少购买决策障碍
+支持语音查询自然语言优化
+Step 9: Reviews管理优化 (4小时)
+执行角色: 评价管理专员
+核心策略: 积极评价引导 + 负面评价专业回复 + 4.5+评分维持
+评价引导策略:
+购买后跟进邮件模板
+"感谢您选择SweetNight CoolNest™！为了帮助其他热睡者找到完美的冷却床垫，请分享您的睡眠体验：
+您的睡眠温度改善了多少？
+哪些特性最让您满意？
+您会推荐给朋友吗？"
+负面评价回复模板
+"非常感谢您的反馈。我们重视每一位客户的体验。请通过[联系方式]与我们的客服团队联系，我们将立即为您提供个性化
+解决方案，包括床垫调整建议或100夜试睡期内的免费退换服务。"
+使用工具:
+FeedbackWhiz (自动化邮件)
+AMZFinder (评价邀请)
+Amazon评价管理工具
+质量标准:
+维持4.5+星级评分
+负面评价回复率100%
+评价获取率提升50%
+Step 10: 数据监测部署 (3小时)
+执行角色: Amazon数据分析师
+核心策略: 多维度监测Dashboard，实时追踪Rufus AI推荐效果
+监测指标体系:
+Rufus AI相关指标
+Rufus推荐频次和位置
+AI查询匹配率
+自然语言查询转化率
+传统Amazon指标
+关键词排名变化
+点击率和转化率
+ACOS和广告ROI
+用户行为指标
+页面停留时间
+图片点击分布
+A+内容互动率
+使用工具:
+Amazon Brand Analytics
+Jungle Scout (排名追踪)
+自定义Dashboard (综合数据)
+成功标准:
+Rufus推荐率提升300%
+整体销量增长>50%
+AI查询转化率>8%
+Amazon页面元素详细优化策略
+Product Title (P0 - 极高影响)
+Rufus AI触发查询:
+"best [product] for [specific need]"
+"[brand] vs competitors"
+"mattress under [price] for [user type]"
+2025新特性适配:
+Shopping Memory个性化标题推荐
+基于用户历史搜索行为优化
+动态关键词权重调整
+Bullet Points (P0 - 极高影响)
+Feature→Benefit转化原则:
+1. 技术特性 → 用户问题解决
+2. 产品参数 → 具体使用体验
+3. 认证标准 → 安全可靠保障
+4. 品牌承诺 → 购买风险消除
+Rufus AI引用优化:
+回答"What are the benefits..."问题
+解决"How does...work"疑问
+提供对比和选择建议
+A+ Content (P1 - 高影响)
+多模态内容理解:
+图文结合便于AI全面理解
+结构化信息支持精确提取
+对比表格提供决策支持数据
+Q&A Section (P0 - 极高影响)
+专业问答覆盖:
+产品技术问题专业解答
+使用方法详细指导
+购买决策全面支持
+售后服务明确承诺
+技术实施标准
+Backend Keywords优化标准
+249字符100%利用率
+核心词密度合理分布
+长尾词语义覆盖>80%
+竞品词策略性植入
+HTML Description格式要求
+标签结构正确完整
+段落层次清晰明确
+列表格式便于AI解析
+关键信息突出标记
+图片技术规格
+主图1500x1500px，白底RGB
+辅助图1000x1000px，场景丰富
+文字清晰可读，信息准确
+视觉吸引力和信息价值并重
+立即执行的关键任务
+P0优先级（立即执行）
+1. CoolNest™ Title改写: 采用Intent-based格式，集成核心卖点
+2. 重写5个Bullet Points: 问题解决→技术特性→用户益处→社会证明→行动号召
+3. 优化Backend Keywords: 249字符最大化利用，覆盖核心和长尾词
+4. 创建20+Q&A问答对: 专业回答用户核心疑虑
+P1优先级（本周完成）
+5. ⭐ 制作6个A+Content模块: 包含对比表格和使用场景展示
+6. ⭐ 拍摄9张产品图片: 涵盖产品、场景、细节、认证等
+7. ⭐ 建立评价管理流程: 维持4.5+星级评分
+P2优先级（下周完成）
+8. 设置监测Dashboard: 追踪Rufus AI推荐效果和转化数据
+预期优化效果
+关键指标提升
+Rufus AI推荐率: +300%
+搜索匹配准确度: >85%
+AI内容可读性: >90%
+整体转化率: +50%
+关键词排名: Top 10覆盖率>80%
+ROI分析
+总投入时间: 69小时（4周完成）
+预期销量增长: >50%
+广告效率提升: ACOS<25%，ROI>4:1
+长期品牌价值: AI时代竞争优势建立
+总结
+本Amazon GEO优化SOP通过10个系统化步骤，全面提升SweetNight产品在Rufus AI中的表现。重点关注Intent-based优
+化、多模态内容理解、自然语言处理等AI核心能力，确保在2025年Amazon AI购物环境中占据领先地位。
+通过专业的标题优化、结构化的内容改写、丰富的A+内容制作和完善的Q&A系统，SweetNight将在Amazon平台实现AI推
+荐率300%的显著提升，建立AI购物时代的可持续竞争优势。通过不同角色使用平台的角度出发来构建所有前端应用交互页面，前端应用交互页面可以参考“leap - acp - portal.tsx”文件，不用全部照搬该文件，要根据项目整体结构来生成对应功能模块的应用交互页面。然后再基于前端交互页面和后端业务数据结构来构建逐渐完善后端的开发，请根据这个方向从新调整开发计划，并能保障每次执行完任务都要对项目是否可以运行进行检查。import React, { useState, useEffect } from 'react';
 import { ChevronRight, Home, Search, Package, ShoppingCart, BarChart3, Settings, Users, Brain, FileText, Send, DollarSign, TrendingUp, Activity, Globe, Target, Zap, AlertCircle, CheckCircle, Clock, Filter, Download, Plus, Edit, Trash2, Eye, RefreshCw, Link, Award, Layers, Database, PieChart, Calendar, CreditCard, Truck, UserCheck, Shield, Bell, LogOut, Menu, X, ChevronDown, Upload, Copy, ExternalLink, Hash, Tag, BookOpen, MessageSquare, Youtube, Twitter, ArrowUpRight, ArrowDownRight, Info } from 'lucide-react';
 
 const App = () => {

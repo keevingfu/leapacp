@@ -7,6 +7,11 @@ import {
   Settings,
   BarChart3,
   Database,
+  TrendingUp,
+  Target,
+  Globe,
+  LineChart,
+  ShoppingBag,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -28,8 +33,19 @@ const navigation = [
     ],
   },
   {
+    name: 'GEO Workflow',
+    items: [
+      { name: 'Workflow Dashboard', href: '/geo-workflow/dashboard', icon: TrendingUp },
+      { name: 'On-site GEO', href: '/geo-workflow/onsite', icon: Target },
+      { name: 'Off-site GEO', href: '/geo-workflow/offsite', icon: Globe },
+      { name: 'GEO Monitoring', href: '/geo-workflow/monitoring', icon: LineChart },
+    ],
+  },
+  {
     name: 'Commerce',
     items: [
+      { name: 'Shopify GEO', href: '/geo-workflow/sweetnight-shopify', icon: ShoppingBag },
+      { name: 'Amazon GEO', href: '/geo-workflow/amazon', icon: ShoppingCart },
       { name: 'Orders', href: '/commerce/orders', icon: ShoppingCart },
       { name: 'Offers', href: '/commerce/offers', icon: ShoppingCart },
     ],

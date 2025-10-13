@@ -2,554 +2,714 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🚀 全局能力集成
+## Language Standards
 
-本项目已集成全局自动化开发能力，可使用以下工具加速开发：
+**IMPORTANT**: These language rules MUST be followed at all times:
 
-### Context Engineering (已启用)
-- `/generate-prp [INITIAL.md]` - 从需求文档生成完整的Product Requirements Prompt
-- `/execute-prp [PRP-file]` - 自动化执行PRP进行端到端实现
-- 📁 命令位置: `.claude/commands/generate-prp.md`, `execute-prp.md`
-- 📖 参考: `/Users/cavin/Context-Engineering-Intro`
+### User Interaction
+- **Language**: Chinese (中文)
+- Use Chinese for all communication with the user
+- Provide explanations, summaries, and responses in Chinese
+- Use Chinese for error messages and status updates shown to user
 
-### BMAD 方法 (可用)
-**核心角色命令**:
-- `/analyst` - 市场研究和需求分析
-- `/architect` - 系统架构设计
-- `/pm` - 项目管理规划
-- `/dev` - 开发实现
-- `/qa` - 质量保证测试
+### Code Generation
+- **Language**: English only
+- All variable names in English
+- All function names in English
+- All code comments in English
+- Follow standard English naming conventions (camelCase, PascalCase, snake_case)
 
-**SuperClaude命令** (17个可用):
-- `/sc:implement` - 功能实现（带MCP集成）
-- `/sc:test` - 测试执行与报告
-- `/sc:analyze` - 代码质量分析
-- `/sc:design` - 架构设计
-- `/sc:git` - Git操作（智能提交）
-- `/sc:workflow` - 从PRD生成实现工作流
-- 等17个命令 (详见全局CLAUDE.md)
+### UI Elements
+- **Language**: English only
+- All labels in English
+- All buttons in English
+- All UI messages in English
+- All user-facing text in English
 
-### MCP 服务器能力 (全局可用)
-**数据层** (所有数据库已通过Docker运行):
-- PostgreSQL (localhost:5437) - 关系型数据库
-- MongoDB (localhost:27018) - 文档型数据库
-- Neo4j (localhost:7688/7475) - 图数据库 ⭐ **本项目核心依赖**
-- Redis (localhost:6382) - 缓存/KV存储
+## Project Overview
 
-**AI & 问题解决**:
-- Sequential Thinking - 结构化问题分解
-- Memory - 知识图谱持久化记忆
+**Leap Agentic Commerce Platform (ACP)** - An integrated platform combining Generation Engine Optimization (GEO) and Agentic Commerce Protocol (ACP) capabilities.
 
-**Web & 自动化**:
-- Puppeteer - 浏览器自动化
-- Firecrawl (localhost:3002) - 自托管数据爬取
+**Current Status**: Early development phase
+- ✅ Frontend: 15 pages + 7 UI components (React + TypeScript + Vite)
+- ✅ Backend: 2 services implemented (Knowledge Graph + Data Collector)
+- 🚧 Commerce services: Planned but not yet implemented
 
-**协作 & 文档**:
-- Notion - 知识库管理
-- Slack - 团队协作
-- Feishu (飞书) - 文档编辑与图表生成
+## Development Commands
 
-**版本控制 & DevOps**:
-- GitHub - 代码仓库操作
-- GitLab - CI/CD集成
+### Frontend (Vite + React)
 
-### 自动化开发策略
-选择适合任务的策略：
-
-**方案一: Context Engineering驱动** (已使用) ⭐
 ```bash
-# 1. 定义需求 → 创建INITIAL.md
-# 2. 生成执行计划 → /generate-prp INITIAL.md
-# 3. 自动化实现 → /execute-prp PRPs/feature-name.md
-```
-适合：需求明确、模式化的功能开发
-
-**方案二: BMAD敏捷开发流**
-```bash
-/analyst --research "需求"
-/architect --design "架构"
-/pm --create-prd "功能"
-/dev --implement "story"
-/qa --test "feature"
-```
-适合：复杂业务系统、多角色协作
-
-**方案三: SuperClaude快速开发**
-```bash
-/sc:workflow PRD.md              # 生成工作流
-/sc:implement --feature "..."    # 实现功能
-/sc:test --coverage              # 测试
-/sc:git --commit                 # 提交
-```
-适合：日常开发任务、快速迭代
-
-**方案四: 混合编排** (推荐大型项目)
-```bash
-/bmad-orchestrator --workflow "full-stack-development"
-# 自动协调BMAD角色 + Context Engineering + MCP工具
-```
-
-### 环境配置
-**全局配置文件**:
-- MCP配置: `~/.mcp.json` (20+服务器)
-- 环境变量: `~/.mcp.env` (所有凭证，600权限保护)
-- 环境加载: `~/.mcp-load-env.sh`
-
-**项目本地配置** (优先级更高):
-- `.mcp.json` (如需项目特定MCP服务器)
-- `.env` (项目环境变量)
-
-### 📋 CI/CD 自动化流程
-
-**状态文件体系**:
-- `AUTOMATION_PLAN.md` - 开发执行方案，实时更新任务进度
-- `PROJECT_STATUS.md` - 项目整体状态，展示完成情况
-- `COMPLETION_REPORT.md` - 里程碑完成报告
-- `CICD_AUTOMATION.md` - CI/CD自动化流程文档 ⭐ **详细指南**
-
-**自动化原则**:
-每次完成任务后，自动同步进展到所有状态文件，确保：
-1. ✅ TodoWrite工具跟踪当前任务
-2. ✅ AUTOMATION_PLAN.md实时更新进度
-3. ✅ PROJECT_STATUS.md同步状态表格
-4. ✅ 代码行数自动统计（`wc -l`）
-5. ✅ 时间戳自动更新
-
-**快速检查清单** (每次任务完成后):
-- [ ] TodoWrite标记completed
-- [ ] AUTOMATION_PLAN.md更新"已完成"
-- [ ] PROJECT_STATUS.md表格更新✅
-- [ ] 代码行数记录
-- [ ] 时间戳更新
-
-**详细指南**: 参见 `CICD_AUTOMATION.md` 📖
-
----
-
-## 项目概述
-
-**Leap Agentic Commerce Platform (ACP)** 是一个集成**生成引擎优化（GEO）**和**代理商务（ACP）**的一体化平台,旨在让品牌在AI时代不仅"被看见",更能"被购买"。
-
-**核心定位**:
-- GEO侧: 通过知识图谱+多模态内容生成提升AI Citation率
-- Commerce侧: 通过ACP协议实现AI对话中的即时结账能力
-- 多租户: 支持多品牌、多项目的统一运营与数据隔离
-
-**目标用户**: 跨境DTC品牌、电商卖家、品牌出海企业
-
-## 项目现状
-
-⚠️ **当前状态**: 早期原型阶段
-- 仅包含文档规范和前端UI原型(React组件)
-- **尚未实现**后端服务、数据库、API等核心功能
-- 主要文件:
-  - `leap_acp_prd.md` - 产品需求文档
-  - `leap_acp_dev_guide.md` - 开发指南
-  - `leap-acp-portal.tsx` - 前端UI原型(单文件组件)
-
-## 架构概览
-
-### 整体分层
-```
-接入层: API Gateway / ACP Gateway / CDN
-  ↓
-应用层: GEO Services / Commerce Services
-  ↓
-数据层: Neo4j / PostgreSQL / Redis / S3
-  ↓
-基础设施: K8s / Kafka / Monitoring / Logging
-```
-
-### 核心技术栈(规划)
-
-| 层次 | 技术选型 |
-|------|---------|
-| 后端框架 | FastAPI (Python 3.11+) |
-| 异步任务 | Celery 5.3+ + Redis |
-| 图数据库 | Neo4j 5.x |
-| 关系数据库 | PostgreSQL 15+ |
-| 缓存 | Redis 7.x |
-| 消息队列 | Kafka 3.x / RabbitMQ |
-| 对象存储 | S3 / MinIO |
-| 前端框架 | React 18+ + TypeScript 5+ |
-| UI组件库 | Tailwind CSS 3+ + shadcn/ui |
-| 容器编排 | Kubernetes |
-| 监控追踪 | Prometheus + Grafana + OpenTelemetry |
-| 日志 | ELK Stack / Loki |
-| CI/CD | GitHub Actions |
-
-## 核心服务划分
-
-### GEO侧服务
-- `data-collector-service` - 多平台数据采集(YouTube/Reddit/Quora/Medium等)
-- `faq-clustering-service` - FAQ意图聚类与热点识别
-- `knowledge-graph-service` - Neo4j知识图谱管理(产品/特性/场景/问题/用户群/竞品/Offer)
-- `content-generator-service` - 基于LLM的多模态内容生成(视频脚本/长文/问答/对比/FAQ)
-- `content-scoring-service` - 内容质量评分(相关性/可读性/SEO/原创性)
-- `distribution-service` - 多平台内容自动分发
-- `analytics-service` - 效果监测与归因分析
-
-### Commerce侧服务
-- `commerce-gateway` - ACP协议网关(验签/幂等/重放防护/速率限制)
-- `order-orchestrator` - 订单编排SAGA状态机(风控→校验→授权→商家下单→捕获→履约)
-- `payment-adapter` - 支付聚合层(Stripe共享支付令牌/Delegated Payments)
-- `offer-catalog-service` - 基于知识图谱生成可售Offer视图
-- `merchant-adapter-service` - 商家适配(Shopify/Etsy/自建OMS)
-- `fulfillment-service` - 履约物流管理
-- `consent-service` - 用户同意管理与数据最小化
-
-### 共享服务
-- `auth-service` - 认证授权(OIDC单点登录/2FA)
-- `tenant-service` - 多租户管理与RBAC
-- `notification-service` - 通知服务
-- `audit-service` - 审计日志
-
-## 关键数据模型
-
-### 知识图谱Schema (Neo4j)
-
-**节点类型**:
-```cypher
-(:Product {id, name, sku, category, brand, description})
-(:Feature {id, name, type, value, description})
-(:Scenario {id, name, description, tags[]})
-(:Problem {id, description, severity, frequency})
-(:UserGroup {id, name, demographics{}, behavior{}})
-(:Competitor {id, brand, product, price_range})
-(:Offer {offer_id, sku, merchant_id, price, currency, availability,
-         stock_level, valid_from, valid_until, region})
-(:Merchant {merchant_id, name, platform, mor, commission_rate})
-(:Content {content_id, type, platform, url, status, score})
-```
-
-**关系类型**:
-```cypher
--[:HAS_FEATURE {confidence}]->
--[:SOLVES {effectiveness}]->
--[:APPLIES_TO {relevance}]->
--[:TARGETS {priority}]->
--[:COMPARES_WITH {comparison_type}]->
--[:HAS_OFFER]->
--[:SOLD_BY]->
--[:GENERATED_FROM]->
-```
-
-### 交易数据模型 (PostgreSQL)
-
-**核心表**:
-- `tenants` - 租户表(tenant_id, name, settings)
-- `brands` - 品牌表(brand_id, tenant_id, name, logo_url)
-- `orders` - 订单表(acp_order_id, user_hash, merchant_id, offer_id, quantity, amount, state)
-- `payments` - 支付表(order_id, provider, auth_id, capture_id, risk_score)
-- `fulfillments` - 履约表(order_id, carrier, tracking_no, ship_to, status)
-- `consent_audit` - 同意审计表(user_hash, step, fields_shared[], acp_request_id)
-- `contents` - 内容表(content_id, type, title, body, score, status)
-- `content_distributions` - 内容分发记录表
-- `content_metrics` - 性能指标表(impressions, clicks, conversions)
-
-## 核心业务流程
-
-### 订单状态机(SAGA)
-```
-CREATED → RISK_CHECK → VALIDATE_OFFER →
-PAYMENT_AUTHORIZE → MERCHANT_ORDER → CAPTURE →
-FULFILLING → CLOSED/REFUNDED/CANCELLED
-```
-
-**补偿事务**:
-- 商家下单失败 → 释放支付授权
-- 支付捕获失败 → 取消商家订单 + 退款
-- 风控失败/Offer失效 → 订单取消
-
-### 从"问题"到"下单"的完整链路
-1. **发现**: 用户在ChatGPT询问产品相关问题
-2. **推荐**: AI基于知识图谱产出推荐,展示可购Offer + Buy按钮
-3. **同意与校验**: ACP网关验证请求,记录用户同意,二次校验价格/库存/区域
-4. **支付授权**: 使用共享支付令牌仅授权指定金额+商家
-5. **商家下单**: 调用Shopify/Etsy等平台创建订单
-6. **支付捕获**: 按策略捕获(即时/发货后)
-7. **履约通知**: 同步状态,追踪物流,异常补偿
-8. **归因闭环**: 串联Citation→Offer→Order转化路径
-
-## API接口规范
-
-### RESTful设计原则
-- 版本控制: `/api/v1/...` 或 `/acp/v1/...`
-- 资源命名: 使用复数名词
-- HTTP方法: GET(查询), POST(创建), PUT(更新), DELETE(删除)
-- 标准响应格式:
-```python
-{
-  "success": bool,
-  "message": str,
-  "data": Any,
-  "errors": Dict,
-  "meta": Dict  # {page, per_page, total} for pagination
-}
-```
-
-### 核心API端点
-
-**ACP接口** (`commerce-gateway`):
-```
-POST /acp/v1/orders.create    # 创建订单
-GET  /acp/v1/orders.status    # 查询订单状态
-POST /acp/v1/orders.cancel    # 取消订单
-```
-
-**知识图谱API**:
-```
-POST   /api/v1/graph/entities           # 创建实体
-GET    /api/v1/graph/entities/{id}      # 获取实体
-PUT    /api/v1/graph/entities/{id}      # 更新实体
-DELETE /api/v1/graph/entities/{id}      # 删除实体
-POST   /api/v1/graph/relationships      # 创建关系
-POST   /api/v1/graph/query              # 执行Cypher查询
-```
-
-**内容API**:
-```
-POST   /api/v1/content/generate         # 生成内容
-GET    /api/v1/content/{id}             # 获取内容
-PUT    /api/v1/content/{id}             # 更新内容
-POST   /api/v1/content/{id}/score       # 评分内容
-POST   /api/v1/content/{id}/publish     # 发布内容
-```
-
-**Offer Catalog**:
-```
-GET    /api/v1/offers                   # 查询报价(支持product_id/region筛选)
-POST   /api/v1/offers                   # 创建报价
-PUT    /api/v1/offers/{id}              # 更新报价
-```
-
-## 开发环境搭建(规划)
-
-### 前置要求
-- Python 3.11+
-- Node.js 18+
-- Docker Desktop
-- PostgreSQL 15+
-- Redis 7+
-- Neo4j 5+
-
-### 快速启动(待实现)
-```bash
-# 1. 克隆项目
-git clone <repo-url>
-cd leapacp
-
-# 2. 配置环境变量
-cp .env.example .env
-# 编辑.env填入数据库连接、API密钥等
-
-# 3. 启动基础设施(Docker Compose推荐)
-docker-compose up -d  # 启动PostgreSQL/Neo4j/Redis/Kafka
-
-# 4. 后端服务
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-alembic upgrade head  # 数据库迁移
-uvicorn main:app --reload --port 8000
-
-# 5. 前端
 cd frontend
-npm install
-npm run dev  # 访问 http://localhost:3000
+
+# Development
+npm install                  # Install dependencies
+npm run dev                  # Start dev server (http://localhost:5173)
+npm run build                # Production build
+npm run preview              # Preview production build
+
+# Code Quality
+npm run type-check           # TypeScript type checking
+npm run lint                 # ESLint check
+npm run verify               # Quick verification (~5s)
+npm run verify-full          # Full verification (~30-60s)
 ```
 
-## 测试策略
+### Backend Services
 
-### 单元测试
-- 使用 `pytest` 和 `pytest-asyncio`
-- 测试覆盖率目标: ≥80%
-- 关键模块必须有测试: GraphService, OrderOrchestrator, ContentGenerator
-
-### 集成测试
-- 测试订单完整流程(风控→授权→下单→履约)
-- 测试知识图谱CRUD + Cypher查询
-- 测试支付适配器(Stripe沙箱)
-
-### E2E测试
-- 使用 Playwright
-- 测试关键用户旅程(内容生成→审核→发布, ACP订单创建→完成)
-
-### 运行测试
+#### Knowledge Graph Service (Port 8001)
 ```bash
-# 后端单元测试
-cd backend
+cd backend/services/knowledge-graph
+
+# Setup
+cp .env.example .env         # Copy environment template
+# Edit .env with Neo4j credentials
+pip install -r requirements.txt
+
+# Development
+uvicorn main:app --reload --port 8001
+
+# Testing
+pytest tests/ -v             # Run all tests
+pytest tests/ --cov=.        # Run with coverage
+pytest tests/test_main.py -v  # Run specific test file
+```
+
+#### Data Collector Service (Port 8002)
+```bash
+cd backend/services/data-collector
+
+# Setup
+cp .env.example .env         # Copy environment template
+# Edit .env with API keys (YouTube, Reddit, etc.)
+pip install -r requirements.txt
+
+# Development
+uvicorn main:app --reload --port 8002
+
+# Testing
+pytest tests/ -v
+pytest tests/ --cov=.
+```
+
+### Docker Services
+
+```bash
+# Neo4j (Graph Database)
+docker run -d \
+  --name neo4j-leap \
+  -p 7474:7474 -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/password \
+  neo4j:5.14
+
+# Access Neo4j Browser: http://localhost:7474
+```
+
+## Architecture Overview
+
+### Service Architecture
+
+The platform follows a microservices architecture with clear separation between GEO and Commerce capabilities:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Frontend (Vite + React)              │
+│                    Port: 5173                           │
+└────────────┬────────────────────────────────────────────┘
+             │
+             │ HTTP/REST
+             │
+┌────────────┴────────────────────────────────────────────┐
+│                    API Gateway Layer                     │
+│               (Future: Port 8000)                       │
+└──┬──────────────────────────────────────────────────┬───┘
+   │                                                   │
+   │ GEO Side                                         │ Commerce Side
+   │                                                   │
+┌──┴────────────────────────┐         ┌──────────────┴──────────────┐
+│ Knowledge Graph Service   │         │  Commerce Gateway           │
+│ Port: 8001                │         │  (Future: Port 8100)        │
+│ - Neo4j graph management  │         │  - ACP protocol handler     │
+│ - Entity/relationship CRUD│         │  - Order orchestration      │
+└──┬────────────────────────┘         └──────────────┬──────────────┘
+   │                                                   │
+┌──┴────────────────────────┐         ┌──────────────┴──────────────┐
+│ Data Collector Service    │         │  Payment Adapter            │
+│ Port: 8002                │         │  (Future: Port 8101)        │
+│ - Multi-platform scraping │         │  - Stripe integration       │
+│ - YouTube/Reddit/Firecrawl│         │  - Payment authorization    │
+└───────────────────────────┘         └─────────────────────────────┘
+             │                                         │
+             │                                         │
+┌────────────┴─────────────────────────────────────────┴──┐
+│                    Data Layer                            │
+│  Neo4j (7687) | PostgreSQL | Redis | S3                 │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Data Flow Patterns
+
+#### 1. Knowledge Graph Construction Flow
+```
+Data Sources → Data Collector → Knowledge Graph Service → Neo4j
+    ↓              ↓                      ↓                  ↓
+YouTube/Reddit  Scrape/Parse      Create Entities      Store Graph
+                                  Create Relationships
+```
+
+#### 2. Content Generation Flow (Future)
+```
+User Request → Frontend → Content Generator → LLM API
+                             ↓
+                    Knowledge Graph Query
+                             ↓
+                    Generated Content → Content Library
+```
+
+#### 3. Order Processing Flow (Future)
+```
+AI Agent → Commerce Gateway → Order Orchestrator
+              ↓                      ↓
+       Verify Request        Risk Check → Validate Offer
+                                    ↓
+                            Payment Authorize → Merchant Order
+                                    ↓
+                            Payment Capture → Fulfillment
+```
+
+### Key Design Patterns
+
+**1. Service Independence**
+- Each service runs independently with its own port
+- Services communicate via REST APIs (not yet implemented)
+- No direct database sharing between services
+
+**2. Graph-Centric Data Model**
+- Core data stored in Neo4j as nodes and relationships
+- Node types: Product, Feature, Scenario, Problem, UserGroup, Competitor, Offer
+- Relationship types: HAS_FEATURE, SOLVES, APPLIES_TO, TARGETS, etc.
+
+**3. Multi-Tenant Support (Planned)**
+- Tenant isolation at data layer
+- RBAC for authorization
+- Shared infrastructure, isolated data
+
+## Technology Stack
+
+### Frontend
+- **Framework**: React 19.1 + TypeScript 5.9
+- **Build Tool**: Vite 7.1
+- **Styling**: Tailwind CSS 3.4 + shadcn/ui
+- **Router**: React Router DOM 7.9
+- **Visualization**: React Flow 11.11 (graphs), Recharts 3.2 (charts)
+- **State**: Zustand 5.0, TanStack Query 5.90
+
+### Backend
+- **Framework**: FastAPI 0.104 (Python 3.11+)
+- **Graph DB**: Neo4j 5.14
+- **Testing**: pytest 7.4 + pytest-asyncio + pytest-cov
+- **HTTP Client**: httpx 0.25
+
+### Future Services (Not Yet Implemented)
+- **Database**: PostgreSQL 15+ (relational data)
+- **Cache**: Redis 7.x
+- **Queue**: Celery 5.3+ + Kafka/RabbitMQ
+- **Storage**: S3 / MinIO
+- **Container**: Docker + Kubernetes
+- **Monitoring**: Prometheus + Grafana
+
+## API Endpoints
+
+### Knowledge Graph Service (http://localhost:8001)
+
+```python
+# Health Check
+GET /health
+
+# Entity Management
+POST   /api/v1/entities              # Create entity
+GET    /api/v1/entities/{id}         # Get entity
+PUT    /api/v1/entities/{id}         # Update entity
+DELETE /api/v1/entities/{id}         # Delete entity
+
+# Relationship Management
+POST   /api/v1/relationships          # Create relationship
+GET    /api/v1/relationships/{id}    # Get relationship
+DELETE /api/v1/relationships/{id}    # Delete relationship
+
+# Graph Queries
+POST   /api/v1/query                 # Execute Cypher query
+GET    /api/v1/graph/summary         # Get graph statistics
+```
+
+### Data Collector Service (http://localhost:8002)
+
+```python
+# Health Check
+GET /health
+
+# Collection Tasks
+POST   /api/v1/collect/youtube       # Collect from YouTube
+POST   /api/v1/collect/reddit        # Collect from Reddit
+POST   /api/v1/collect/firecrawl     # Web scraping via Firecrawl
+GET    /api/v1/tasks/{task_id}       # Get task status
+
+# Data Management
+GET    /api/v1/data/sources          # List data sources
+GET    /api/v1/data/stats            # Get collection statistics
+```
+
+## Neo4j Graph Schema
+
+### Node Types
+
+```cypher
+// Product Node
+(:Product {
+  id: string,
+  name: string,
+  sku: string,
+  category: string,
+  brand: string,
+  description: string,
+  created_at: datetime
+})
+
+// Feature Node
+(:Feature {
+  id: string,
+  name: string,
+  type: string,
+  value: string,
+  description: string
+})
+
+// Scenario Node
+(:Scenario {
+  id: string,
+  name: string,
+  description: string,
+  tags: [string]
+})
+
+// Problem Node
+(:Problem {
+  id: string,
+  description: string,
+  severity: int,      // 1-5
+  frequency: int      // occurrence count
+})
+
+// User Group Node
+(:UserGroup {
+  id: string,
+  name: string,
+  demographics: map,
+  behavior: map
+})
+
+// Offer Node (Commerce)
+(:Offer {
+  offer_id: string,
+  sku: string,
+  merchant_id: string,
+  price: decimal,
+  currency: string,
+  availability: string,
+  stock_level: int,
+  valid_from: datetime,
+  valid_until: datetime
+})
+```
+
+### Relationship Types
+
+```cypher
+// Product has features
+(Product)-[:HAS_FEATURE {confidence: float}]->(Feature)
+
+// Product solves problems
+(Product)-[:SOLVES {effectiveness: float}]->(Problem)
+
+// Product applies to scenarios
+(Product)-[:APPLIES_TO {relevance: float}]->(Scenario)
+
+// Product targets user groups
+(Product)-[:TARGETS {priority: int}]->(UserGroup)
+
+// Product has offers
+(Product)-[:HAS_OFFER]->(Offer)
+
+// Example Query: Find products for a specific problem
+MATCH (p:Product)-[s:SOLVES]->(prob:Problem {id: $problem_id})
+WHERE s.effectiveness > 0.7
+RETURN p, s, prob
+ORDER BY s.effectiveness DESC
+```
+
+## Environment Configuration
+
+### Required Environment Variables
+
+#### Knowledge Graph Service (.env)
+```bash
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_password
+NEO4J_DATABASE=neo4j
+```
+
+#### Data Collector Service (.env)
+```bash
+# Database
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=your_password
+
+# API Keys
+YOUTUBE_API_KEY=your_youtube_api_key
+REDDIT_CLIENT_ID=your_reddit_client_id
+REDDIT_CLIENT_SECRET=your_reddit_client_secret
+FIRECRAWL_API_URL=http://localhost:3002
+FIRECRAWL_API_KEY=fs-test
+```
+
+#### Security Best Practices
+- ✅ `.env` files are in `.gitignore`
+- ✅ Use `.env.example` as template
+- ✅ Set file permissions: `chmod 600 .env`
+- ❌ Never commit API keys or passwords
+
+## Testing Strategy
+
+### Unit Tests
+```bash
+# Run all tests
+pytest tests/ -v
+
+# Run with coverage
 pytest tests/ --cov=. --cov-report=html
 
-# 前端测试
+# Run specific test
+pytest tests/test_main.py::test_health_check -v
+
+# Run tests matching pattern
+pytest tests/ -k "test_create" -v
+```
+
+### Integration Tests
+```bash
+# Test with real Neo4j (requires Docker running)
+pytest tests/integration/ -v
+
+# Test API endpoints
+pytest tests/test_api.py -v
+```
+
+### Frontend Verification
+```bash
 cd frontend
-npm run test
 
-# E2E测试
-npm run test:e2e
+# Quick check (5 seconds)
+npm run verify
+
+# Full check (30-60 seconds)
+npm run verify-full
+
+# E2E page testing with Playwright
+node test-all-pages.mjs
 ```
 
-## 代码规范
+## Git Workflow
 
-### Python (PEP 8)
-- 4空格缩进,每行≤120字符
-- 函数/方法: `snake_case`
-- 类: `PascalCase`
-- 常量: `UPPER_SNAKE_CASE`
-- 类型注解强制使用
+### Branch Strategy
+- `main` - Production-ready code
+- `develop` - Development integration branch
+- `feature/*` - New features
+- `hotfix/*` - Emergency fixes
 
-### TypeScript/JavaScript
-- 2空格缩进,使用单引号
-- 函数/变量: `camelCase`
-- 组件/类: `PascalCase`
-- 接口: `IInterfaceName`
-- 类型: `TTypeName`
-
-### Git工作流
-**分支策略**:
-- `main` - 生产环境
-- `develop` - 开发环境
-- `feature/*` - 功能分支
-- `hotfix/*` - 紧急修复
-
-**提交规范** (Conventional Commits):
-```
-feat: 添加内容生成API
-fix: 修复订单状态机bug
-docs: 更新API文档
-style: 格式化代码
-refactor: 重构图谱服务
-test: 添加单元测试
-chore: 更新依赖
+### Commit Convention (Conventional Commits)
+```bash
+feat: Add new feature
+fix: Fix bug
+docs: Update documentation
+style: Format code
+refactor: Refactor code
+test: Add tests
+chore: Update dependencies
 ```
 
-## 安全与合规要求
+### Before Committing
+```bash
+# Frontend
+cd frontend
+npm run type-check
+npm run lint
+npm run verify
 
-- **数据传输**: TLS 1.3加密
-- **敏感数据**: 加密存储,脱敏展示
-- **PII保护**: 最小化共享原则,同意留痕
-- **风控策略**: 设备指纹/IP信誉/地址黑名单/频率限制
-- **合规**: GDPR/CCPA/PCI DSS/SOC 2
-- **漏洞修复SLA**: Critical<24h, High<7天
+# Backend (each service)
+cd backend/services/{service-name}
+pytest tests/ --cov=.
+```
 
-## 性能要求
+## Troubleshooting
 
-| 指标 | 目标 |
-|------|------|
-| API响应时间(P95) | <500ms |
-| API响应时间(P99) | <1s |
-| 网关吞吐量 | ≥10000 QPS |
-| 订单处理时长 | <5s |
-| 知识图谱查询 | <100ms |
-| 页面加载时间 | <2s |
-| 系统可用性 | ≥99.9% |
+### Frontend Issues
 
-## 观测性
+**Port 5173 already in use**
+```bash
+# Kill existing process
+lsof -ti:5173 | xargs kill -9
+npm run dev
+```
 
-### 分布式追踪
-- 使用OpenTelemetry
-- Trace ID传递(`acp_request_id`)
-- 跨服务调用链可视化
+**Type errors**
+```bash
+npm run type-check
+# Fix TypeScript errors in reported files
+```
 
-### 日志管理
-- 结构化日志(JSON格式)
-- 日志聚合: ELK Stack / Loki
-- 日志级别: DEBUG/INFO/WARNING/ERROR/CRITICAL
+### Backend Issues
 
-### 监控指标
-- Prometheus采集 + Grafana可视化
-- 业务指标: 订单数/支付成功率/履约时长/AI Citation率
-- 系统指标: CPU/内存/网络/数据库连接池
+**Neo4j connection failed**
+```bash
+# Check Neo4j is running
+docker ps | grep neo4j
 
-### 健康检查
-- `/health` - 服务健康端点
-- `/ready` - 就绪检查(依赖服务可用性)
-- SLO定义与自动降级
+# Test connection
+curl http://localhost:7474
 
-## 实施路线图
+# Check credentials in .env
+cat .env | grep NEO4J
+```
 
-### Phase 1: 核心基础 (W1-W4)
-- [ ] 搭建Neo4j知识图谱基础
-- [ ] 实现基础数据采集(3个数据源)
-- [ ] 开发内容生成MVP(2种类型)
-- [ ] 搭建commerce-gateway + order-orchestrator骨架
-- [ ] 接入Stripe沙箱环境
-- [ ] PostgreSQL/Redis部署与初始化
-- [ ] 完成1笔端到端测试订单
+**Import errors**
+```bash
+# Reinstall dependencies
+pip install -r requirements.txt
 
-### Phase 2: 功能增强 (W5-W8)
-- [ ] 扩展数据源至8+平台
-- [ ] 扩展内容类型至6种
-- [ ] 实现多平台自动分发
-- [ ] 完善订单编排所有状态
-- [ ] 增加Shopify/Etsy适配器
-- [ ] 建立效果监测仪表盘
-- [ ] 实现基础风控规则
-- [ ] 知识图谱节点≥500个
+# Verify Python version
+python --version  # Should be 3.11+
+```
 
-### Phase 3: 产品化 (W9-W12)
-- [ ] 实现多租户管理系统
-- [ ] 开发RBAC权限系统
-- [ ] 建立财务对账系统
-- [ ] 完善归因分析系统
-- [ ] 性能优化(缓存/索引)
-- [ ] 完整告警体系与应急预案
-- [ ] API文档与运维手册
-- [ ] 知识图谱节点≥1000个
-- [ ] 订单成功率≥95%
+**Port already in use**
+```bash
+# Find process using port 8001
+lsof -ti:8001 | xargs kill -9
 
-## 关键风险与缓解
+# Start service
+uvicorn main:app --reload --port 8001
+```
 
-| 风险 | 缓解措施 |
-|------|---------|
-| 价格/库存不同步导致下单失败 | 下单前二次校验 + 价格保护策略 + 自动补偿 |
-| ACP协议变更 | 版本适配层设计 + 契约测试 + 快速响应机制 |
-| 支付集成复杂度 | 充分沙箱测试 + 分阶段集成 + 专家咨询 |
-| 知识图谱质量不达标 | 建立质量评估体系 + 人工审核 + 渐进式优化 |
-| 合规问题 | 法务审核 + 合规咨询 + 定期审计 |
+## Development Workflow
 
-## 参考文档
+### 1. Setting Up New Feature
 
-项目文档:
-- `leap_acp_prd.md` - 产品需求文档
-- `leap_acp_dev_guide.md` - 开发指南
-- `leap_acp_user_guide.md` - 用户指南
-- `leap_agentic_commerce_platform.md` - 平台白皮书
+```bash
+# 1. Create feature branch
+git checkout -b feature/your-feature
 
-外部资源:
-- [OpenAI ACP规范文档](https://platform.openai.com/docs/guides/agentic-commerce)
-- [Stripe Connect文档](https://stripe.com/docs/connect)
-- [Neo4j图数据库最佳实践](https://neo4j.com/docs/)
-- [GDPR合规指南](https://gdpr.eu/)
-- [PCI DSS标准](https://www.pcisecuritystandards.org/)
+# 2. For backend service
+cd backend/services/{service-name}
+cp .env.example .env
+# Edit .env with your credentials
+pip install -r requirements.txt
 
-## 术语表
+# 3. For frontend
+cd frontend
+npm install
+```
 
-- **GEO** - Generation Engine Optimization, 生成引擎优化
-- **ACP** - Agentic Commerce Protocol, 代理商务协议
-- **MOR** - Merchant of Record, 记录商家
-- **Offer** - 可售报价视图(价格/库存/商家/区域)
-- **SAGA** - 分布式事务模式,用于订单编排
-- **PII** - Personally Identifiable Information, 个人可识别信息
-- **Citation** - AI在推荐时引用品牌/产品的行为
-- **3DS** - 3D Secure, 信用卡在线支付安全认证
+### 2. Development Cycle
 
-## 开发提示
+```bash
+# Start services
+cd backend/services/knowledge-graph
+uvicorn main:app --reload --port 8001 &
 
-⚠️ **重要**:
-- 这是一个全新项目,大部分功能尚未实现
-- 开始开发前请先搭建完整的开发环境(数据库/消息队列等)
-- 遵循文档中定义的架构和API规范
-- 安全和合规是硬性要求,不可妥协
-- 所有代码必须经过Code Review
-- 关键模块必须有充分的测试覆盖
+cd backend/services/data-collector
+uvicorn main:app --reload --port 8002 &
 
-如需添加新功能,请先:
-1. 在PRD中确认需求范围
-2. 更新架构设计文档
-3. 定义API契约
-4. 编写测试用例
-5. 实现功能
-6. 完成Code Review
-7. 部署与监控
+cd frontend
+npm run dev
+```
+
+### 3. Testing & Verification
+
+```bash
+# Backend
+pytest tests/ -v --cov=.
+
+# Frontend
+npm run verify-full
+```
+
+### 4. Commit & Push
+
+```bash
+git add .
+git commit -m "feat: your feature description"
+git push origin feature/your-feature
+```
+
+## Context Engineering Integration
+
+This project has global Context Engineering and BMAD capabilities available:
+
+### Context Engineering Commands
+```bash
+/generate-prp INITIAL-feature.md    # Generate Product Requirements Prompt
+/execute-prp PRPs/feature.md        # Execute PRP for automated implementation
+```
+
+### BMAD Method Commands
+```bash
+/analyst --research "topic"         # Market research
+/architect --design "system"        # Architecture design
+/pm --create-prd "feature"          # Project management
+/dev --implement "story"            # Development
+/qa --test "feature"                # Quality assurance
+```
+
+### SuperClaude Commands (17 available)
+```bash
+/sc:implement --feature "..."       # Feature implementation
+/sc:test --coverage                 # Run tests
+/sc:analyze --code-quality          # Code analysis
+/sc:git --commit                    # Smart commit
+```
+
+### MCP Servers (Global)
+**Available Tools**:
+- Neo4j (localhost:7688) - Graph database ⭐ Core dependency
+- MongoDB (localhost:27018) - Document database
+- PostgreSQL (localhost:5437) - Relational database
+- Redis (localhost:6382) - Cache
+- Firecrawl (localhost:3002) - Web scraping
+- Notion, Slack, Feishu - Documentation & collaboration
+- GitHub, GitLab - Version control
+- Sequential Thinking, Memory - AI capabilities
+
+## Project Status
+
+### Completed ✅
+- Frontend: 15 pages
+  - Overview: Dashboard, Analytics
+  - GEO: Knowledge Graph, Data Collection, Content Generation, Content Library
+  - GEO Workflow: Workflow Dashboard, On-site GEO, Off-site GEO, GEO Monitoring
+  - Commerce: Shopify GEO, Amazon GEO, Orders, Offers
+  - System: Settings
+- Frontend: 7 UI components (Button, Card, Badge, Table, Input, Textarea, Tabs)
+- Backend: Knowledge Graph Service (Neo4j integration, CRUD APIs)
+- Backend: Data Collector Service (YouTube, Reddit, Firecrawl scrapers)
+- Testing framework (pytest + coverage)
+- Verification scripts (quick-check.sh, verify.sh)
+- E2E testing with Playwright (test-all-pages.mjs)
+
+### In Progress 🚧
+- Content Generator Service (LLM-based content generation)
+- Commerce Gateway (ACP protocol handler)
+- Order Orchestrator (SAGA state machine)
+
+### Planned 📋
+- Payment Adapter (Stripe integration)
+- Offer Catalog Service
+- Merchant Adapter (Shopify/Etsy)
+- Analytics Service
+- Multi-tenant management
+- RBAC authorization
+
+## Common Issues and Solutions
+
+### React Infinite Loop Prevention
+
+**Problem**: React components causing "Maximum update depth exceeded" error.
+
+**Root Cause**: Using `|| []` to provide default values creates new array references on every render, triggering infinite re-renders.
+
+**Solution**: Wrap in `useMemo` to stabilize references:
+
+```typescript
+// ❌ Wrong - creates new array every render
+const entities = entitiesResponse?.data || []
+
+// ✅ Correct - stable reference
+const entities = useMemo(() => entitiesResponse?.data || [], [entitiesResponse?.data])
+```
+
+**Also avoid**: Including setter functions from hooks in `useEffect` dependencies:
+
+```typescript
+// ❌ Wrong - causes infinite loop
+useEffect(() => {
+  setNodes(graphNodes)
+}, [graphNodes, setNodes])  // setNodes causes re-render
+
+// ✅ Correct - only depend on data
+useEffect(() => {
+  setNodes(graphNodes)
+}, [graphNodes])
+```
+
+### Vite Type Import Errors
+
+**Problem**: Vite throws errors like "does not provide an export named X".
+
+**Root Cause**: Vite's ES module system requires explicit type imports for TypeScript types.
+
+**Solution**: Use `import type` for TypeScript types:
+
+```typescript
+// ❌ Wrong
+import { QueryClient, DefaultOptions } from '@tanstack/react-query'
+import { AxiosInstance, AxiosError } from 'axios'
+
+// ✅ Correct
+import { QueryClient } from '@tanstack/react-query'
+import type { DefaultOptions } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
+```
+
+### Missing Routes
+
+**Problem**: Navigation links don't work, timeout when clicking.
+
+**Root Cause**: Routes not defined in `App.tsx`.
+
+**Solution**: Ensure all navigation items in `Sidebar.tsx` have corresponding routes in `App.tsx`:
+
+```typescript
+// App.tsx
+<Route path="geo-workflow/dashboard" element={<GeoWorkflowDashboard />} />
+<Route path="geo-workflow/onsite" element={<OnsiteGeo />} />
+// ... etc
+```
+
+## Important Notes
+
+⚠️ **Security**:
+- Never commit `.env` files
+- Keep API keys in environment variables
+- Set `.env` permissions to 600
+- Use `.env.example` as template
+
+⚠️ **Neo4j Dependency**:
+- Most services require Neo4j running
+- Start Neo4j before backend services
+- Check connection in `.env` files
+
+⚠️ **Port Allocation**:
+- Frontend: 5173
+- Knowledge Graph: 8001
+- Data Collector: 8002
+- Neo4j: 7474 (HTTP), 7687 (Bolt)
+- Future services: 8100+ (Commerce), 8000 (Gateway)
+
+## Reference Documentation
+
+- `README.md` - Project overview and quick start
+- `leap_acp_prd.md` - Product requirements document
+- `leap_acp_dev_guide.md` - Development guide
+- `VERIFICATION_GUIDE.md` - Testing and verification
+- `PROJECT_STATUS.md` - Implementation status tracking
