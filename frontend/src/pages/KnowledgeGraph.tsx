@@ -14,9 +14,10 @@ import 'reactflow/dist/style.css'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Plus, Search, Link as LinkIcon, Code, RefreshCw } from 'lucide-react'
+import { Plus, Search, Link as LinkIcon, Code, RefreshCw, Download, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useEntities, useRelationships, useGraphStats } from '@/hooks/useGraph'
+import { useImportGeoGraph } from '@/hooks/useImportGeoGraph'
 import { EntityDialog } from '@/components/knowledge-graph/EntityDialog'
 import { RelationshipDialog } from '@/components/knowledge-graph/RelationshipDialog'
 import { QueryDialog } from '@/components/knowledge-graph/QueryDialog'
@@ -45,6 +46,9 @@ export function KnowledgeGraph() {
   const { data: entitiesResponse, refetch: refetchEntities } = useEntities({ search: searchTerm })
   const { data: relationshipsResponse, refetch: refetchRelationships } = useRelationships()
   const { data: statsResponse } = useGraphStats()
+
+  // GEO Graph Import
+  const { importGraph, isImporting, progress } = useImportGeoGraph()
 
   const entities = useMemo(() => entitiesResponse?.data || [], [entitiesResponse?.data])
   const relationships = useMemo(() => relationshipsResponse?.data || [], [relationshipsResponse?.data])
@@ -116,6 +120,17 @@ export function KnowledgeGraph() {
     refetchRelationships()
   }
 
+  const handleImportGeoGraph = async () => {
+    const success = await importGraph()
+    if (success) {
+      // Refresh the graph after import
+      setTimeout(() => {
+        refetchEntities()
+        refetchRelationships()
+      }, 1000)
+    }
+  }
+
   // Calculate entity type counts
   const entityTypeCounts = useMemo(() => {
     const counts: Record<string, number> = {}
@@ -133,6 +148,23 @@ export function KnowledgeGraph() {
           <p className="text-muted-foreground">Product knowledge visualization and management</p>
         </div>
         <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={handleImportGeoGraph}
+            disabled={isImporting}
+          >
+            {isImporting ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Importing... ({progress.current}/{progress.total})
+              </>
+            ) : (
+              <>
+                <Download className="h-4 w-4 mr-2" />
+                Load GEO Demo
+              </>
+            )}
+          </Button>
           <Button variant="outline" onClick={handleRefresh}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh
