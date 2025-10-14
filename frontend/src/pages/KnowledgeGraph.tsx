@@ -14,13 +14,14 @@ import 'reactflow/dist/style.css'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Plus, Search, Link as LinkIcon, Code, RefreshCw, Download, Loader2 } from 'lucide-react'
+import { Plus, Search, Link as LinkIcon, Code, RefreshCw, Download, Loader2, Pyramid } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useEntities, useRelationships, useGraphStats } from '@/hooks/useGraph'
 import { useImportGeoGraph } from '@/hooks/useImportGeoGraph'
 import { EntityDialog } from '@/components/knowledge-graph/EntityDialog'
 import { RelationshipDialog } from '@/components/knowledge-graph/RelationshipDialog'
 import { QueryDialog } from '@/components/knowledge-graph/QueryDialog'
+import { PyramidGraph } from '@/components/knowledge-graph/PyramidGraph'
 import type { GraphEntity, GraphRelationship } from '@/lib/api/types'
 import { geoGraphSeedData } from '@/data/geo-graph-seed'
 import { useUIStore } from '@/store'
@@ -43,6 +44,7 @@ export function KnowledgeGraph() {
   const [relationshipDialogOpen, setRelationshipDialogOpen] = useState(false)
   const [queryDialogOpen, setQueryDialogOpen] = useState(false)
   const [selectedEntity, setSelectedEntity] = useState<GraphEntity | null>(null)
+  const [viewMode, setViewMode] = useState<'graph' | 'pyramid'>('pyramid') // Default to pyramid view
 
   // Local state for graph data (fallback when backend is unavailable)
   const [localEntities, setLocalEntities] = useState<GraphEntity[]>([])
@@ -205,41 +207,59 @@ export function KnowledgeGraph() {
         </div>
         <div className="flex gap-2">
           <Button
-            variant="outline"
-            onClick={handleImportGeoGraph}
-            disabled={isImporting}
+            variant={viewMode === 'pyramid' ? 'default' : 'outline'}
+            onClick={() => setViewMode('pyramid')}
           >
-            {isImporting ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Importing... ({progress.current}/{progress.total})
-              </>
-            ) : (
-              <>
-                <Download className="h-4 w-4 mr-2" />
-                Load GEO Demo
-              </>
-            )}
+            <Pyramid className="h-4 w-4 mr-2" />
+            Pyramid View
           </Button>
-          <Button variant="outline" onClick={handleRefresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
-          <Button variant="outline" onClick={() => setQueryDialogOpen(true)}>
+          <Button
+            variant={viewMode === 'graph' ? 'default' : 'outline'}
+            onClick={() => setViewMode('graph')}
+          >
             <Code className="h-4 w-4 mr-2" />
-            Query
+            Graph View
           </Button>
-          <Button variant="outline" onClick={() => setRelationshipDialogOpen(true)}>
-            <LinkIcon className="h-4 w-4 mr-2" />
-            Add Relationship
-          </Button>
-          <Button onClick={() => {
-            setSelectedEntity(null)
-            setEntityDialogOpen(true)
-          }}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Entity
-          </Button>
+          {viewMode === 'graph' && (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleImportGeoGraph}
+                disabled={isImporting}
+              >
+                {isImporting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Importing... ({progress.current}/{progress.total})
+                  </>
+                ) : (
+                  <>
+                    <Download className="h-4 w-4 mr-2" />
+                    Load GEO Demo
+                  </>
+                )}
+              </Button>
+              <Button variant="outline" onClick={handleRefresh}>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+              <Button variant="outline" onClick={() => setQueryDialogOpen(true)}>
+                <Code className="h-4 w-4 mr-2" />
+                Query
+              </Button>
+              <Button variant="outline" onClick={() => setRelationshipDialogOpen(true)}>
+                <LinkIcon className="h-4 w-4 mr-2" />
+                Add Relationship
+              </Button>
+              <Button onClick={() => {
+                setSelectedEntity(null)
+                setEntityDialogOpen(true)
+              }}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Entity
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
@@ -254,7 +274,9 @@ export function KnowledgeGraph() {
           </CardHeader>
           <CardContent>
             <div className="h-[600px] border rounded-lg bg-gray-50">
-              {entities.length === 0 ? (
+              {viewMode === 'pyramid' ? (
+                <PyramidGraph />
+              ) : entities.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-8">
                   <div className="text-gray-400 mb-4">
                     <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
