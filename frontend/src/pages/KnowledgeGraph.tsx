@@ -22,6 +22,8 @@ import { EntityDialog } from '@/components/knowledge-graph/EntityDialog'
 import { RelationshipDialog } from '@/components/knowledge-graph/RelationshipDialog'
 import { QueryDialog } from '@/components/knowledge-graph/QueryDialog'
 import type { GraphEntity, GraphRelationship } from '@/lib/api/types'
+import { geoGraphSeedData } from '@/data/geo-graph-seed'
+import { useUIStore } from '@/store'
 
 // Entity type colors
 const ENTITY_COLORS: Record<string, string> = {
@@ -42,6 +44,12 @@ export function KnowledgeGraph() {
   const [queryDialogOpen, setQueryDialogOpen] = useState(false)
   const [selectedEntity, setSelectedEntity] = useState<GraphEntity | null>(null)
 
+  // Local state for graph data (fallback when backend is unavailable)
+  const [localEntities, setLocalEntities] = useState<GraphEntity[]>([])
+  const [localRelationships, setLocalRelationships] = useState<GraphRelationship[]>([])
+  const [useLocalData, setUseLocalData] = useState(false)
+  const [autoLoadComplete, setAutoLoadComplete] = useState(false)
+
   // Fetch data from backend
   const { data: entitiesResponse, refetch: refetchEntities } = useEntities({ search: searchTerm })
   const { data: relationshipsResponse, refetch: refetchRelationships } = useRelationships()
@@ -49,9 +57,18 @@ export function KnowledgeGraph() {
 
   // GEO Graph Import
   const { importGraph, isImporting, progress } = useImportGeoGraph()
+  const { addNotification } = useUIStore()
 
-  const entities = useMemo(() => entitiesResponse?.data || [], [entitiesResponse?.data])
-  const relationships = useMemo(() => relationshipsResponse?.data || [], [relationshipsResponse?.data])
+  const entities = useMemo(() => {
+    if (useLocalData) return localEntities
+    return entitiesResponse?.data || []
+  }, [useLocalData, localEntities, entitiesResponse?.data])
+
+  const relationships = useMemo(() => {
+    if (useLocalData) return localRelationships
+    return relationshipsResponse?.data || []
+  }, [useLocalData, localRelationships, relationshipsResponse?.data])
+
   const stats = statsResponse?.data
 
   // Convert entities to nodes
@@ -87,8 +104,47 @@ export function KnowledgeGraph() {
     }))
   }, [relationships])
 
+  // Function to load local GEO graph data
+  const loadLocalGeoGraph = useCallback(() => {
+    const transformedEntities: GraphEntity[] = geoGraphSeedData.nodes.map((node) => ({
+      id: node.id,
+      type: node.type as any,
+      properties: node.properties,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }))
+
+    const transformedRelationships: GraphRelationship[] = geoGraphSeedData.relationships.map((rel) => ({
+      id: rel.id,
+      source_id: rel.source_id,
+      target_id: rel.target_id,
+      type: rel.type,
+      properties: rel.properties || {},
+      created_at: new Date().toISOString(),
+    }))
+
+    setLocalEntities(transformedEntities)
+    setLocalRelationships(transformedRelationships)
+    setUseLocalData(true)
+
+    addNotification({
+      type: 'success',
+      title: 'GEO Graph Loaded',
+      message: `Loaded ${transformedEntities.length} entities and ${transformedRelationships.length} relationships`,
+    })
+  }, [addNotification])
+
   const [nodes, setNodes, onNodesChange] = useNodesState(graphNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(graphEdges)
+
+  // Auto-load GEO graph data on page mount
+  useEffect(() => {
+    if (!autoLoadComplete) {
+      // Load local data immediately
+      loadLocalGeoGraph()
+      setAutoLoadComplete(true)
+    }
+  }, [autoLoadComplete, loadLocalGeoGraph])
 
   // Update nodes and edges when data changes
   useEffect(() => {
