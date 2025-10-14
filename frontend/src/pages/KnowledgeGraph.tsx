@@ -1,16 +1,4 @@
 import { useCallback, useState, useEffect, useMemo } from 'react'
-import ReactFlow, {
-  type Node,
-  type Edge,
-  addEdge,
-  type Connection,
-  useNodesState,
-  useEdgesState,
-  Background,
-  Controls,
-  MiniMap,
-} from 'reactflow'
-import 'reactflow/dist/style.css'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -22,6 +10,7 @@ import { EntityDialog } from '@/components/knowledge-graph/EntityDialog'
 import { RelationshipDialog } from '@/components/knowledge-graph/RelationshipDialog'
 import { QueryDialog } from '@/components/knowledge-graph/QueryDialog'
 import { PyramidGraph } from '@/components/knowledge-graph/PyramidGraph'
+import { EChartsGraph } from '@/components/knowledge-graph/EChartsGraph'
 import type { GraphEntity, GraphRelationship } from '@/lib/api/types'
 import { geoGraphSeedData } from '@/data/geo-graph-seed'
 import { useUIStore } from '@/store'
@@ -73,39 +62,6 @@ export function KnowledgeGraph() {
 
   const stats = statsResponse?.data
 
-  // Convert entities to nodes
-  const graphNodes = useMemo<Node[]>(() => {
-    return entities.map((entity, index) => ({
-      id: entity.id,
-      type: 'default',
-      data: {
-        label: entity.properties.name || entity.properties.description?.substring(0, 30) || entity.id,
-        entity
-      },
-      position: {
-        x: (index % 5) * 250,
-        y: Math.floor(index / 5) * 150
-      },
-      style: {
-        background: ENTITY_COLORS[entity.type] || '#6b7280',
-        color: '#fff',
-        borderRadius: '8px',
-        padding: '10px'
-      },
-    }))
-  }, [entities])
-
-  // Convert relationships to edges
-  const graphEdges = useMemo<Edge[]>(() => {
-    return relationships.map((rel) => ({
-      id: rel.id,
-      source: rel.source_id,
-      target: rel.target_id,
-      label: rel.type,
-      animated: ['HAS_FEATURE', 'SOLVES'].includes(rel.type),
-    }))
-  }, [relationships])
-
   // Function to load local GEO graph data
   const loadLocalGeoGraph = useCallback(() => {
     const transformedEntities: GraphEntity[] = geoGraphSeedData.nodes.map((node) => ({
@@ -136,9 +92,6 @@ export function KnowledgeGraph() {
     })
   }, [addNotification])
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(graphNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(graphEdges)
-
   // Auto-load GEO graph data on page mount
   useEffect(() => {
     if (!autoLoadComplete) {
@@ -147,31 +100,6 @@ export function KnowledgeGraph() {
       setAutoLoadComplete(true)
     }
   }, [autoLoadComplete, loadLocalGeoGraph])
-
-  // Update nodes and edges when data changes
-  useEffect(() => {
-    setNodes(graphNodes)
-  }, [graphNodes])
-
-  useEffect(() => {
-    setEdges(graphEdges)
-  }, [graphEdges])
-
-  const onConnect = useCallback(
-    (params: Connection) => {
-      if (params.source && params.target) {
-        // Open relationship dialog with pre-filled source and target
-        setRelationshipDialogOpen(true)
-      }
-    },
-    []
-  )
-
-  const onNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
-    const entity = node.data.entity as GraphEntity
-    setSelectedEntity(entity)
-    setEntityDialogOpen(true)
-  }, [])
 
   const handleRefresh = () => {
     refetchEntities()
@@ -296,19 +224,7 @@ export function KnowledgeGraph() {
                   </Button>
                 </div>
               ) : (
-                <ReactFlow
-                  nodes={nodes}
-                  edges={edges}
-                  onNodesChange={onNodesChange}
-                  onEdgesChange={onEdgesChange}
-                  onConnect={onConnect}
-                  onNodeClick={onNodeClick}
-                  fitView
-                >
-                  <Background />
-                  <Controls />
-                  <MiniMap />
-                </ReactFlow>
+                <EChartsGraph entities={entities} relationships={relationships} />
               )}
             </div>
           </CardContent>
