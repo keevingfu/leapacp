@@ -51,10 +51,12 @@ interface UIState {
   sidebarOpen: boolean
   theme: 'light' | 'dark'
   notifications: Notification[]
+  currentPage: string
   toggleSidebar: () => void
   setTheme: (theme: 'light' | 'dark') => void
   addNotification: (notification: Omit<Notification, 'id'>) => void
   removeNotification: (id: string) => void
+  setCurrentPage: (page: string) => void
 }
 
 interface Notification {
@@ -169,6 +171,7 @@ export const useUIStore = create<UIState>()((set) => ({
   sidebarOpen: true,
   theme: 'light',
   notifications: [],
+  currentPage: 'dashboard',
 
   toggleSidebar: () => {
     set((state) => ({ sidebarOpen: !state.sidebarOpen }))
@@ -199,6 +202,10 @@ export const useUIStore = create<UIState>()((set) => ({
     set((state) => ({
       notifications: state.notifications.filter((n) => n.id !== id),
     }))
+  },
+
+  setCurrentPage: (page: string) => {
+    set({ currentPage: page })
   },
 }))
 

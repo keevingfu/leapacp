@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GEO Project Operations Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    .page-transition {
+      transition: all 0.3s ease;
+    }
+
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = Recharts;
+
+    // Main Application Component
+    const GEOPlatform = () => {
+      const [currentPage, setCurrentPage] = useState('dashboard');
+      const [sidebarOpen, setSidebarOpen] = useState(true);
+
+      // Navigation Menu Items
+      const menuItems = [
+        { id: 'dashboard', label: 'Dashboard', icon: 'LayoutDashboard' },
+        { id: 'prompt-research', label: 'PROM Research', icon: 'Search' },
+        { id: 'content-factory', label: 'Content Factory', icon: 'FileText' },
+        { id: 'citation-engine', label: 'Citation Engine', icon: 'Link' },
+        { id: 'distribution', label: 'Distribution', icon: 'Share2' },
+        { id: 'analytics', label: 'Analytics', icon: 'TrendingUp' },
+        { id: 'knowledge-graph', label: 'Knowledge Graph', icon: 'Network' },
+        { id: 'acp-commerce', label: 'ACP Commerce', icon: 'ShoppingCart' },
+        { id: 'settings', label: 'Settings', icon: 'Settings' }
+      ];
+
+      // Icon Component
+      const Icon = ({ name, size = 20 }) => {
+        useEffect(() => {
+          lucide.createIcons();
+        }, []);
+        return <i data-lucide={name} style={{ width: size, height: size }}></i>;
+      };
+
+      // Portal Index Page (Navigation Framework)
+      const PortalIndex = ({ children }) => (
+        <div className="min-h-screen bg-gray-50 flex">
+          {/* Sidebar */}
+          <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-white shadow-lg transition-all duration-300 glass-effect`}>
+            <div className="p-4 border-b">
+              <div className="flex items-center justify-between">
+                <h1 className={`font-bold text-xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent ${!sidebarOpen && 'hidden'}`}>
+                  GEO Platform
+                </h1>
+                <button
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  className="p-2 hover:bg-gray-100 rounded-lg"
+                >
+                  <Icon name={sidebarOpen ? 'ChevronsLeft' : 'ChevronsRight'} />
+                </button>
+              </div>
+            </div>
+            <nav className="p-4">
+              {menuItems.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setCurrentPage(item.id)}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg mb-2 transition-all
+                                        ${currentPage === item.id
+                      ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                      : 'hover:bg-gray-100'}`}
+                >
+                  <Icon name={item.icon} />
+                  <span className={`${!sidebarOpen && 'hidden'}`}>{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="flex-1 overflow-auto">
+            {/* Top Bar */}
+            <div className="bg-white shadow-sm p-4 flex justify-between items-center">
+              <h2 className="text-2xl font-semibold">
+                {menuItems.find(item => item.id === currentPage)?.label}
+              </h2>
+              <div className="flex items-center space-x-4">
+                <button className="p-2 hover:bg-gray-100 rounded-lg">
+                  <Icon name="Bell" />
+                </button>
+                <button className="p-2 hover:bg-gray-100 rounded-lg">
+                  <Icon name="HelpCircle" />
+                </button>
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white">
+                    A
+                  </div>
+                  <span className="text-sm">Admin User</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Page Content */}
+            <div className="p-6">
+              {children}
+            </div>
+          </div>
+        </div>
+      );
+
+      // Dashboard Page
+      const DashboardPage = () => {
+        const metrics = [
+          { label: 'PROM Coverage', value: '67%', change: '+5%', color: 'purple' },
+          { label: 'Content Produced', value: '1,234', change: '+120', color: 'blue' },
+          { label: 'Citation Score', value: '0.89', change: '+0.03', color: 'green' },
+          { label: 'Conversion Rate', value: '3.4%', change: '+0.8%', color: 'orange' }
+        ];
+
+        const chartData = [
+          { day: 'Mon', prompts: 45, content: 32, citations: 28 },
+          { day: 'Tue', prompts: 52, content: 38, citations: 35 },
+          { day: 'Wed', prompts: 48, content: 42, citations: 33 },
+          { day: 'Thu', prompts: 58, content: 45, citations: 40 },
+          { day: 'Fri', prompts: 65, content: 48, citations: 45 },
+          { day: 'Sat', prompts: 55, content: 35, citations: 32 },
+          { day: 'Sun', prompts: 50, content: 30, citations: 28 }
+        ];
+
+        return (
+          <div>
+            {/* Metrics Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+              {metrics.map((metric, idx) => (
+                <div key={idx} className="bg-white rounded-lg p-6 shadow-sm card-hover">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <p className="text-gray-500 text-sm">{metric.label}</p>
+                      <p className="text-3xl font-bold mt-2">{metric.value}</p>
+                    </div>
+                    <span className={`text-sm font-medium text-${metric.color}-500`}>
+                      {metric.change}
+                    </span>
+                  </div>
+                  <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full bg-${metric.color}-500`}
+                      style={{ width: metric.value }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Weekly Performance</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={chartData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="day" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="prompts" stroke="#8b5cf6" strokeWidth={2} />
+                    <Line type="monotone" dataKey="content" stroke="#3b82f6" strokeWidth={2} />
+                    <Line type="monotone" dataKey="citations" stroke="#10b981" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h3 className="text-lg font-semibold mb-4">Channel Distribution</h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={[
+                        { name: 'Reddit', value: 35 },
+                        { name: 'Medium', value: 25 },
+                        { name: 'Quora', value: 20 },
+                        { name: 'LinkedIn', value: 15 },
+                        { name: 'Other', value: 5 }
+                      ]}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label
+                    >
+                      <Cell fill="#8b5cf6" />
+                      <Cell fill="#3b82f6" />
+                      <Cell fill="#10b981" />
+                      <Cell fill="#f59e0b" />
+                      <Cell fill="#ef4444" />
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Activity Feed */}
+            <div className="mt-6 bg-white rounded-lg p-6 shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+              <div className="space-y-3">
+                {[
+                  { action: 'New P0 Prompt Added', details: '"Best AI writing tools 2025"', time: '5 min ago' },
+                  { action: 'Content Published', details: '15 articles distributed to Medium', time: '1 hour ago' },
+                  { action: 'Citation Verified', details: 'GPT-4 cited our MongoDB guide', time: '2 hours ago' },
+                  { action: 'Campaign Launched', details: 'Q1 2025 GEO Campaign activated', time: '3 hours ago' }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium">{item.action}</p>
+                      <p className="text-sm text-gray-500">{item.details}</p>
+                    </div>
+                    <span className="text-sm text-gray-400">{item.time}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // PROM Research Page
+      const PROMResearchPage = () => {
+        const [selectedPrompt, setSelectedPrompt] = useState(null);
+        const [filterLevel, setFilterLevel] = useState('all');
+
+        const prompts = [
+          { id: 1, text: 'How to implement AI in e-commerce?', level: 'P0', score: 92, intent: 'Commercial', competition: 'Low' },
+          { id: 2, text: 'Best practices for GEO optimization', level: 'P0', score: 88, intent: 'Informational', competition: 'Medium' },
+          { id: 3, text: 'What is generative engine optimization?', level: 'P1', score: 76, intent: 'Informational', competition: 'High' },
+          { id: 4, text: 'AI content generation tools comparison', level: 'P1', score: 72, intent: 'Commercial', competition: 'Medium' },
+          { id: 5, text: 'How to track AI citations?', level: 'P2', score: 65, intent: 'Informational', competition: 'Low' }
+        ];
+
+        return (
+          <div>
+            {/* Header Actions */}
+            <div className="mb-6 flex justify-between items-center">
+              <div className="flex space-x-4">
+                <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                  <Icon name="Plus" /> Add Prompt
+                </button>
+                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                  <Icon name="Upload" /> Import CSV
+                </button>
+                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                  <Icon name="Download" /> Export
+                </button>
+              </div>
+              <div className="flex space-x-2">
+                {['all', 'P0', 'P1', 'P2'].map(level => (
+                  <button
+                    key={level}
+                    onClick={() => setFilterLevel(level)}
+                    className={`px-4 py-2 rounded-lg transition ${filterLevel === level
+                        ? 'bg-purple-600 text-white'
+                        : 'border border-gray-300 hover:bg-gray-50'
+                      }`}
+                  >
+                    {level === 'all' ? 'All Levels' : level}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Prompt Analysis Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Prompt List */}
+              <div className="lg:col-span-2 bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Prompt Repository</h3>
+                </div>
+                <div className="p-4">
+                  <div className="mb-4">
+                    <input
+                      type="text"
+                      placeholder="Search prompts..."
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    {prompts.filter(p => filterLevel === 'all' || p.level === filterLevel).map(prompt => (
+                      <div
+                        key={prompt.id}
+                        onClick={() => setSelectedPrompt(prompt)}
+                        className={`p-4 border rounded-lg cursor-pointer transition ${selectedPrompt?.id === prompt.id
+                            ? 'border-purple-500 bg-purple-50'
+                            : 'hover:bg-gray-50'
+                          }`}
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <p className="font-medium flex-1">{prompt.text}</p>
+                          <span className={`px-2 py-1 text-xs font-medium rounded ${prompt.level === 'P0' ? 'bg-red-100 text-red-600' :
+                              prompt.level === 'P1' ? 'bg-yellow-100 text-yellow-600' :
+                                'bg-green-100 text-green-600'
+                            }`}>
+                            {prompt.level}
+                          </span>
+                        </div>
+                        <div className="flex space-x-4 text-sm text-gray-500">
+                          <span>Score: {prompt.score}</span>
+                          <span>Intent: {prompt.intent}</span>
+                          <span>Competition: {prompt.competition}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Prompt Details */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h3 className="font-semibold mb-4">Prompt Analysis</h3>
+                {selectedPrompt ? (
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm text-gray-500">G-Score Breakdown</p>
+                      <div className="mt-2 space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-sm">Intent Strength</span>
+                          <span className="font-medium">85%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">AI Citation Rate</span>
+                          <span className="font-medium">92%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">Commercial Value</span>
+                          <span className="font-medium">78%</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-sm">E-E-A-T Match</span>
+                          <span className="font-medium">88%</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t">
+                      <p className="text-sm text-gray-500 mb-2">Related Keywords</p>
+                      <div className="flex flex-wrap gap-2">
+                        {['AI', 'e-commerce', 'implementation', 'strategy', 'tools'].map(keyword => (
+                          <span key={keyword} className="px-2 py-1 bg-gray-100 text-xs rounded">
+                            {keyword}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t">
+                      <p className="text-sm text-gray-500 mb-2">Content Coverage</p>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-sm">
+                          <span>Articles: 3</span>
+                          <span className="text-green-500">Active</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Videos: 1</span>
+                          <span className="text-yellow-500">Pending</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span>Social: 5</span>
+                          <span className="text-green-500">Active</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                      Generate Content
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-gray-400 text-center py-8">Select a prompt to view details</p>
+                )}
+              </div>
+            </div>
+
+            {/* Coverage Matrix */}
+            <div className="mt-6 bg-white rounded-lg p-6 shadow-sm">
+              <h3 className="font-semibold mb-4">Coverage Matrix</h3>
+              <div className="grid grid-cols-5 gap-4">
+                {['Informational', 'Commercial', 'Transactional', 'Navigational', 'Local'].map(intent => (
+                  <div key={intent} className="text-center">
+                    <p className="text-sm text-gray-500 mb-2">{intent}</p>
+                    <div className="relative h-32 bg-gray-100 rounded-lg overflow-hidden">
+                      <div
+                        className="absolute bottom-0 w-full bg-gradient-to-t from-purple-600 to-purple-400"
+                        style={{ height: `${Math.random() * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-sm font-medium mt-2">{Math.floor(Math.random() * 100)}%</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Content Factory Page
+      const ContentFactoryPage = () => {
+        const [activeTab, setActiveTab] = useState('generate');
+
+        const templates = [
+          { id: 1, name: 'Ultimate Guide Template', type: 'Long-form', uses: 234 },
+          { id: 2, name: 'Comparison Article', type: 'Medium', uses: 189 },
+          { id: 3, name: 'Quick Answer', type: 'Short', uses: 567 },
+          { id: 4, name: 'Tutorial Series', type: 'Multi-part', uses: 123 }
+        ];
+
+        const queue = [
+          { id: 1, prompt: 'How to optimize for AI search?', status: 'processing', progress: 65 },
+          { id: 2, prompt: 'Best GEO strategies 2025', status: 'queued', progress: 0 },
+          { id: 3, prompt: 'AI content generation guide', status: 'completed', progress: 100 },
+          { id: 4, prompt: 'Citation tracking methods', status: 'processing', progress: 30 }
+        ];
+
+        return (
+          <div>
+            {/* Tab Navigation */}
+            <div className="border-b mb-6">
+              <nav className="flex space-x-8">
+                {['generate', 'templates', 'queue', 'history'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`py-2 px-1 border-b-2 font-medium text-sm transition ${activeTab === tab
+                        ? 'border-purple-600 text-purple-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                      }`}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            {/* Content Generation Tab */}
+            {activeTab === 'generate' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg p-6 shadow-sm">
+                  <h3 className="font-semibold mb-4">Content Configuration</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Select Prompt</label>
+                      <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option>How to implement AI in e-commerce?</option>
+                        <option>Best practices for GEO optimization</option>
+                        <option>What is generative engine optimization?</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Content Type</label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {['Article', 'Guide', 'Tutorial', 'FAQ'].map(type => (
+                          <button key={type} className="px-4 py-2 border rounded-lg hover:bg-purple-50 hover:border-purple-500">
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Target Length</label>
+                      <input
+                        type="range"
+                        min="500"
+                        max="5000"
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-sm text-gray-500">
+                        <span>500 words</span>
+                        <span>2500 words</span>
+                        <span>5000 words</span>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">AI Model</label>
+                      <select className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option>GPT-4 Turbo</option>
+                        <option>Claude 3 Opus</option>
+                        <option>Gemini Pro</option>
+                        <option>Custom Fine-tuned</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">E-E-A-T Focus</label>
+                      <div className="space-y-2">
+                        {['Experience', 'Expertise', 'Authoritativeness', 'Trustworthiness'].map(factor => (
+                          <label key={factor} className="flex items-center">
+                            <input type="checkbox" className="mr-2" defaultChecked />
+                            <span className="text-sm">{factor}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                      Generate Content
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-6 shadow-sm">
+                  <h3 className="font-semibold mb-4">Preview & Optimization</h3>
+                  <div className="border rounded-lg p-4 mb-4 h-64 overflow-auto">
+                    <p className="text-gray-400">Content preview will appear here...</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm">SEO Score</span>
+                      <div className="flex items-center">
+                        <div className="w-32 h-2 bg-gray-200 rounded-full mr-2">
+                          <div className="h-full w-3/4 bg-green-500 rounded-full"></div>
+                        </div>
+                        <span className="text-sm font-medium">75/100</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm">Readability</span>
+                      <span className="text-sm font-medium text-green-600">Grade 8</span>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span className="text-sm">E-E-A-T Score</span>
+                      <div className="flex space-x-1">
+                        {[1, 2, 3, 4, 5].map(star => (
+                          <span key={star} className={star <= 4 ? 'text-yellow-400' : 'text-gray-300'}>★</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Templates Tab */}
+            {activeTab === 'templates' && (
+              <div>
+                <div className="mb-4 flex justify-between items-center">
+                  <h3 className="font-semibold">Content Templates</h3>
+                  <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                    Create Template
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {templates.map(template => (
+                    <div key={template.id} className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition">
+                      <div className="mb-3">
+                        <Icon name="FileText" size={32} />
+                      </div>
+                      <h4 className="font-medium mb-1">{template.name}</h4>
+                      <p className="text-sm text-gray-500 mb-3">{template.type}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-400">Used {template.uses} times</span>
+                        <button className="text-purple-600 hover:text-purple-700">
+                          <Icon name="Edit2" size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Queue Tab */}
+            {activeTab === 'queue' && (
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Production Queue</h3>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {queue.map(item => (
+                      <div key={item.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex-1">
+                          <p className="font-medium mb-1">{item.prompt}</p>
+                          <div className="flex items-center space-x-4">
+                            <span className={`text-sm ${item.status === 'completed' ? 'text-green-600' :
+                                item.status === 'processing' ? 'text-blue-600' :
+                                  'text-gray-500'
+                              }`}>
+                              {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                            </span>
+                            {item.status === 'processing' && (
+                              <div className="flex-1 max-w-xs">
+                                <div className="h-2 bg-gray-200 rounded-full">
+                                  <div
+                                    className="h-full bg-blue-600 rounded-full"
+                                    style={{ width: `${item.progress}%` }}
+                                  ></div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex space-x-2">
+                          {item.status === 'completed' && (
+                            <button className="p-2 hover:bg-gray-100 rounded">
+                              <Icon name="Download" size={16} />
+                            </button>
+                          )}
+                          <button className="p-2 hover:bg-gray-100 rounded">
+                            <Icon name="MoreVertical" size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      };
+
+      // Citation Engine Page
+      const CitationEnginePage = () => {
+        const sources = [
+          { id: 1, name: 'Wikipedia', type: 'Reference', trust: 95, citations: 1234 },
+          { id: 2, name: 'Industry Report 2024', type: 'Research', trust: 88, citations: 456 },
+          { id: 3, name: 'Academic Journal', type: 'Academic', trust: 92, citations: 789 },
+          { id: 4, name: 'Government Statistics', type: 'Official', trust: 98, citations: 345 }
+        ];
+
+        const citations = [
+          { content: 'AI implementation in e-commerce', source: 'Wikipedia', confidence: 92, verified: true },
+          { content: 'GEO best practices guide', source: 'Industry Report', confidence: 85, verified: true },
+          { content: 'Citation tracking methodology', source: 'Academic Journal', confidence: 78, verified: false },
+          { content: 'Market statistics 2024', source: 'Government Stats', confidence: 95, verified: true }
+        ];
+
+        return (
+          <div>
+            {/* Citation Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Total Citations</span>
+                  <Icon name="Link" size={16} />
+                </div>
+                <p className="text-2xl font-bold">3,824</p>
+                <p className="text-sm text-green-600">+12% this week</p>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Verified Sources</span>
+                  <Icon name="CheckCircle" size={16} />
+                </div>
+                <p className="text-2xl font-bold">156</p>
+                <p className="text-sm text-green-600">98% trusted</p>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">AI Mentions</span>
+                  <Icon name="Bot" size={16} />
+                </div>
+                <p className="text-2xl font-bold">892</p>
+                <p className="text-sm text-green-600">+45 today</p>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Citation Quality</span>
+                  <Icon name="Award" size={16} />
+                </div>
+                <p className="text-2xl font-bold">0.91</p>
+                <p className="text-sm text-green-600">Excellent</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Source Pool */}
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b flex justify-between items-center">
+                  <h3 className="font-semibold">Source Pool</h3>
+                  <button className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700">
+                    Add Source
+                  </button>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {sources.map(source => (
+                      <div key={source.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+                        <div>
+                          <p className="font-medium">{source.name}</p>
+                          <p className="text-sm text-gray-500">{source.type} • {source.citations} citations</p>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <div className="text-right">
+                            <p className="text-sm font-medium">{source.trust}%</p>
+                            <p className="text-xs text-gray-500">Trust Score</p>
+                          </div>
+                          <button className="p-1 hover:bg-gray-200 rounded">
+                            <Icon name="MoreVertical" size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Citation Tracking */}
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Recent Citations</h3>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {citations.map((citation, idx) => (
+                      <div key={idx} className="p-3 border rounded-lg">
+                        <div className="flex items-start justify-between mb-2">
+                          <p className="text-sm flex-1">{citation.content}</p>
+                          {citation.verified && (
+                            <span className="text-green-500">
+                              <Icon name="CheckCircle" size={16} />
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex justify-between items-center text-xs text-gray-500">
+                          <span>Source: {citation.source}</span>
+                          <span>Confidence: {citation.confidence}%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Citation Map */}
+            <div className="mt-6 bg-white rounded-lg p-6 shadow-sm">
+              <h3 className="font-semibold mb-4">Citation Network Map</h3>
+              <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+                <p className="text-gray-400">Interactive citation network visualization</p>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Distribution Page
+      const DistributionPage = () => {
+        const channels = [
+          { name: 'Reddit', status: 'active', posts: 45, engagement: '8.2%', roi: 320 },
+          { name: 'Medium', status: 'active', posts: 32, engagement: '5.6%', roi: 280 },
+          { name: 'Quora', status: 'active', posts: 28, engagement: '7.1%', roi: 310 },
+          { name: 'LinkedIn', status: 'paused', posts: 15, engagement: '3.2%', roi: 150 }
+        ];
+
+        const scheduled = [
+          { title: 'AI Implementation Guide', channel: 'Medium', time: '2:00 PM', status: 'scheduled' },
+          { title: 'GEO Best Practices', channel: 'Reddit', time: '4:30 PM', status: 'scheduled' },
+          { title: 'Citation Tracking Tips', channel: 'Quora', time: '6:00 PM', status: 'draft' }
+        ];
+
+        return (
+          <div>
+            {/* Channel Performance */}
+            <div className="mb-6">
+              <h3 className="font-semibold mb-4">Channel Performance</h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                {channels.map(channel => (
+                  <div key={channel.name} className="bg-white rounded-lg p-4 shadow-sm">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium">{channel.name}</h4>
+                      <span className={`px-2 py-1 text-xs rounded ${channel.status === 'active'
+                          ? 'bg-green-100 text-green-600'
+                          : 'bg-gray-100 text-gray-600'
+                        }`}>
+                        {channel.status}
+                      </span>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Posts</span>
+                        <span className="font-medium">{channel.posts}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">Engagement</span>
+                        <span className="font-medium">{channel.engagement}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-500">ROI</span>
+                        <span className="font-medium text-green-600">{channel.roi}%</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Publishing Calendar */}
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b flex justify-between items-center">
+                  <h3 className="font-semibold">Publishing Schedule</h3>
+                  <button className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700">
+                    Schedule Post
+                  </button>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {scheduled.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">{item.title}</p>
+                          <p className="text-xs text-gray-500">{item.channel} • {item.time}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className={`px-2 py-1 text-xs rounded ${item.status === 'scheduled'
+                              ? 'bg-blue-100 text-blue-600'
+                              : 'bg-gray-100 text-gray-600'
+                            }`}>
+                            {item.status}
+                          </span>
+                          <button className="p-1 hover:bg-gray-100 rounded">
+                            <Icon name="Edit2" size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Distribution Settings */}
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Distribution Settings</h3>
+                </div>
+                <div className="p-4 space-y-4">
+                  <div>
+                    <label className="flex items-center justify-between">
+                      <span className="text-sm">Auto-publish to primary channels</span>
+                      <input type="checkbox" className="toggle" defaultChecked />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="flex items-center justify-between">
+                      <span className="text-sm">Cross-post to social media</span>
+                      <input type="checkbox" className="toggle" />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="flex items-center justify-between">
+                      <span className="text-sm">Optimize posting times</span>
+                      <input type="checkbox" className="toggle" defaultChecked />
+                    </label>
+                  </div>
+                  <div>
+                    <label className="block text-sm mb-2">Default posting frequency</label>
+                    <select className="w-full px-3 py-2 border rounded-lg text-sm">
+                      <option>3 times per day</option>
+                      <option>5 times per day</option>
+                      <option>10 times per day</option>
+                    </select>
+                  </div>
+                  <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                    Save Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Analytics Page
+      const AnalyticsPage = () => {
+        const performanceData = [
+          { month: 'Jan', prompts: 120, content: 450, citations: 890, conversions: 34 },
+          { month: 'Feb', prompts: 150, content: 520, citations: 1020, conversions: 45 },
+          { month: 'Mar', prompts: 180, content: 610, citations: 1200, conversions: 56 },
+          { month: 'Apr', prompts: 220, content: 750, citations: 1450, conversions: 72 }
+        ];
+
+        return (
+          <div>
+            {/* KPI Dashboard */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-4">
+                <p className="text-sm opacity-90">Total Revenue Impact</p>
+                <p className="text-3xl font-bold mt-2">$125,430</p>
+                <p className="text-sm opacity-90 mt-1">+23% vs last month</p>
+              </div>
+              <div className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg p-4">
+                <p className="text-sm opacity-90">AI Citation Rate</p>
+                <p className="text-3xl font-bold mt-2">68%</p>
+                <p className="text-sm opacity-90 mt-1">Top 3 in category</p>
+              </div>
+              <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg p-4">
+                <p className="text-sm opacity-90">Content ROI</p>
+                <p className="text-3xl font-bold mt-2">4.2x</p>
+                <p className="text-sm opacity-90 mt-1">Above target</p>
+              </div>
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-4">
+                <p className="text-sm opacity-90">Coverage Score</p>
+                <p className="text-3xl font-bold mt-2">82%</p>
+                <p className="text-sm opacity-90 mt-1">15 gaps identified</p>
+              </div>
+            </div>
+
+            {/* Performance Chart */}
+            <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+              <h3 className="font-semibold mb-4">Performance Trends</h3>
+              <ResponsiveContainer width="100%" height={350}>
+                <AreaChart data={performanceData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Area type="monotone" dataKey="citations" stackId="1" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="content" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+                  <Area type="monotone" dataKey="prompts" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.6} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Attribution Analysis */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h3 className="font-semibold mb-4">Attribution Path</h3>
+                <div className="space-y-3">
+                  {[
+                    { step: 'Prompt Discovery', value: '100%', color: 'purple' },
+                    { step: 'Content Creation', value: '85%', color: 'blue' },
+                    { step: 'AI Citation', value: '68%', color: 'green' },
+                    { step: 'User Click', value: '12%', color: 'yellow' },
+                    { step: 'Conversion', value: '3.4%', color: 'red' }
+                  ].map((step, idx) => (
+                    <div key={idx} className="flex items-center">
+                      <span className="w-32 text-sm">{step.step}</span>
+                      <div className="flex-1 mx-4">
+                        <div className="h-4 bg-gray-200 rounded-full">
+                          <div
+                            className={`h-full bg-${step.color}-500 rounded-full`}
+                            style={{ width: step.value }}
+                          ></div>
+                        </div>
+                      </div>
+                      <span className="text-sm font-medium">{step.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-sm">
+                <h3 className="font-semibold mb-4">Top Performing Content</h3>
+                <div className="space-y-3">
+                  {[
+                    { title: 'Complete AI Implementation Guide', citations: 234, conversions: 45 },
+                    { title: 'GEO vs SEO: The Ultimate Comparison', citations: 189, conversions: 38 },
+                    { title: '2025 E-commerce AI Trends', citations: 167, conversions: 32 },
+                    { title: 'Citation Engineering Masterclass', citations: 145, conversions: 28 }
+                  ].map((content, idx) => (
+                    <div key={idx} className="p-3 border rounded-lg hover:bg-gray-50">
+                      <p className="font-medium text-sm mb-1">{content.title}</p>
+                      <div className="flex justify-between text-xs text-gray-500">
+                        <span>{content.citations} citations</span>
+                        <span>{content.conversions} conversions</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Knowledge Graph Page
+      const KnowledgeGraphPage = () => {
+        const entities = [
+          { type: 'Product', count: 45, connections: 234 },
+          { type: 'Feature', count: 128, connections: 567 },
+          { type: 'Scenario', count: 89, connections: 345 },
+          { type: 'Problem', count: 67, connections: 289 }
+        ];
+
+        return (
+          <div>
+            {/* Graph Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              {entities.map(entity => (
+                <div key={entity.type} className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-gray-500 text-sm">{entity.type} Nodes</span>
+                    <Icon name="Circle" size={16} />
+                  </div>
+                  <p className="text-2xl font-bold">{entity.count}</p>
+                  <p className="text-sm text-gray-500">{entity.connections} connections</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Graph Visualization */}
+            <div className="bg-white rounded-lg p-6 shadow-sm mb-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-semibold">Knowledge Graph Visualization</h3>
+                <div className="flex space-x-2">
+                  <button className="px-3 py-1 border rounded hover:bg-gray-50">2D View</button>
+                  <button className="px-3 py-1 border rounded hover:bg-gray-50">3D View</button>
+                  <button className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700">
+                    Edit Graph
+                  </button>
+                </div>
+              </div>
+              <div className="h-96 bg-gray-50 rounded-lg flex items-center justify-center">
+                <p className="text-gray-400">Interactive Neo4j graph visualization would render here</p>
+              </div>
+            </div>
+
+            {/* Entity Management */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Recent Entities</h3>
+                </div>
+                <div className="p-4 space-y-3">
+                  {[
+                    { name: 'AI Writing Assistant', type: 'Product', relations: 15 },
+                    { name: 'Content Generation', type: 'Feature', relations: 23 },
+                    { name: 'E-commerce Integration', type: 'Scenario', relations: 18 },
+                    { name: 'Slow Performance', type: 'Problem', relations: 8 }
+                  ].map((entity, idx) => (
+                    <div key={idx} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-medium">{entity.name}</p>
+                        <p className="text-sm text-gray-500">{entity.type} • {entity.relations} relations</p>
+                      </div>
+                      <button className="p-2 hover:bg-gray-100 rounded">
+                        <Icon name="Edit2" size={16} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Graph Query</h3>
+                </div>
+                <div className="p-4">
+                  <textarea
+                    className="w-full h-32 p-3 border rounded-lg font-mono text-sm"
+                    placeholder="MATCH (p:Product)-[:HAS_FEATURE]->(f:Feature) RETURN p, f LIMIT 10"
+                  ></textarea>
+                  <button className="mt-3 w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                    Execute Query
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // ACP Commerce Page
+      const ACPCommercePage = () => {
+        const offers = [
+          { id: 1, product: 'Premium AI Writer', price: '$99', discount: '20%', conversions: 234 },
+          { id: 2, product: 'GEO Optimization Suite', price: '$199', discount: '15%', conversions: 156 },
+          { id: 3, product: 'Citation Tracker Pro', price: '$49', discount: '30%', conversions: 423 },
+          { id: 4, product: 'Content Analytics', price: '$79', discount: '10%', conversions: 189 }
+        ];
+
+        const orders = [
+          { id: 'ORD-001', product: 'Premium AI Writer', amount: '$79.20', status: 'completed', time: '2 min ago' },
+          { id: 'ORD-002', product: 'GEO Suite', amount: '$169.15', status: 'processing', time: '5 min ago' },
+          { id: 'ORD-003', product: 'Citation Tracker', amount: '$34.30', status: 'completed', time: '12 min ago' }
+        ];
+
+        return (
+          <div>
+            {/* Commerce Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Total Revenue</span>
+                  <Icon name="DollarSign" size={16} />
+                </div>
+                <p className="text-2xl font-bold">$45,678</p>
+                <p className="text-sm text-green-600">+18% today</p>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Active Offers</span>
+                  <Icon name="Tag" size={16} />
+                </div>
+                <p className="text-2xl font-bold">24</p>
+                <p className="text-sm text-gray-500">4 expiring soon</p>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Conversion Rate</span>
+                  <Icon name="TrendingUp" size={16} />
+                </div>
+                <p className="text-2xl font-bold">4.8%</p>
+                <p className="text-sm text-green-600">+0.6% vs avg</p>
+              </div>
+              <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-gray-500 text-sm">Cart Value</span>
+                  <Icon name="ShoppingCart" size={16} />
+                </div>
+                <p className="text-2xl font-bold">$127</p>
+                <p className="text-sm text-gray-500">Average</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Offer Management */}
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b flex justify-between items-center">
+                  <h3 className="font-semibold">Active Offers</h3>
+                  <button className="px-3 py-1 text-sm bg-purple-600 text-white rounded hover:bg-purple-700">
+                    Create Offer
+                  </button>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {offers.map(offer => (
+                      <div key={offer.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+                        <div>
+                          <p className="font-medium">{offer.product}</p>
+                          <div className="flex items-center space-x-3 mt-1">
+                            <span className="text-sm text-gray-500">{offer.price}</span>
+                            <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">
+                              -{offer.discount}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-medium">{offer.conversions}</p>
+                          <p className="text-xs text-gray-500">conversions</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Order Stream */}
+              <div className="bg-white rounded-lg shadow-sm">
+                <div className="p-4 border-b">
+                  <h3 className="font-semibold">Live Order Stream</h3>
+                </div>
+                <div className="p-4">
+                  <div className="space-y-3">
+                    {orders.map(order => (
+                      <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium text-sm">{order.id}</p>
+                          <p className="text-xs text-gray-500">{order.product}</p>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <span className="font-medium">{order.amount}</span>
+                          <span className={`px-2 py-1 text-xs rounded ${order.status === 'completed'
+                              ? 'bg-green-100 text-green-600'
+                              : 'bg-blue-100 text-blue-600'
+                            }`}>
+                            {order.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* ACP Configuration */}
+            <div className="mt-6 bg-white rounded-lg p-6 shadow-sm">
+              <h3 className="font-semibold mb-4">ACP Configuration</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Payment Gateway</label>
+                  <select className="w-full px-3 py-2 border rounded-lg">
+                    <option>Stripe</option>
+                    <option>PayPal</option>
+                    <option>Square</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Currency</label>
+                  <select className="w-full px-3 py-2 border rounded-lg">
+                    <option>USD</option>
+                    <option>EUR</option>
+                    <option>GBP</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Tax Rate</label>
+                  <input type="text" className="w-full px-3 py-2 border rounded-lg" placeholder="8.5%" />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Settings Page
+      const SettingsPage = () => {
+        return (
+          <div>
+            <div className="bg-white rounded-lg shadow-sm">
+              <div className="p-6 border-b">
+                <h3 className="font-semibold">Platform Settings</h3>
+              </div>
+              <div className="p-6 space-y-6">
+                {/* API Configuration */}
+                <div>
+                  <h4 className="font-medium mb-3">API Configuration</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">OpenAI API Key</label>
+                      <input type="password" className="w-full px-3 py-2 border rounded-lg" placeholder="sk-..." />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Anthropic API Key</label>
+                      <input type="password" className="w-full px-3 py-2 border rounded-lg" placeholder="sk-ant-..." />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Google Gemini Key</label>
+                      <input type="password" className="w-full px-3 py-2 border rounded-lg" placeholder="AI..." />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Neo4j Connection</label>
+                      <input type="text" className="w-full px-3 py-2 border rounded-lg" placeholder="bolt://localhost:7687" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Team Management */}
+                <div>
+                  <h4 className="font-medium mb-3">Team Management</h4>
+                  <div className="space-y-3">
+                    {[
+                      { name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'active' },
+                      { name: 'Jane Smith', email: 'jane@example.com', role: 'Editor', status: 'active' },
+                      { name: 'Bob Wilson', email: 'bob@example.com', role: 'Analyst', status: 'invited' }
+                    ].map((member, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <p className="font-medium">{member.name}</p>
+                          <p className="text-sm text-gray-500">{member.email}</p>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <select className="px-3 py-1 border rounded text-sm">
+                            <option>{member.role}</option>
+                            <option>Admin</option>
+                            <option>Editor</option>
+                            <option>Analyst</option>
+                          </select>
+                          <button className="p-1 hover:bg-gray-100 rounded">
+                            <Icon name="MoreVertical" size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <button className="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 text-gray-500 hover:text-purple-600">
+                      + Invite Team Member
+                    </button>
+                  </div>
+                </div>
+
+                {/* Save Button */}
+                <div className="pt-4 border-t">
+                  <button className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                    Save Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      // Page Router
+      const renderPage = () => {
+        switch (currentPage) {
+          case 'dashboard': return <DashboardPage />;
+          case 'prompt-research': return <PROMResearchPage />;
+          case 'content-factory': return <ContentFactoryPage />;
+          case 'citation-engine': return <CitationEnginePage />;
+          case 'distribution': return <DistributionPage />;
+          case 'analytics': return <AnalyticsPage />;
+          case 'knowledge-graph': return <KnowledgeGraphPage />;
+          case 'acp-commerce': return <ACPCommercePage />;
+          case 'settings': return <SettingsPage />;
+          default: return <DashboardPage />;
+        }
+      };
+
+      return (
+        <PortalIndex>
+          {renderPage()}
+        </PortalIndex>
+      );
+    };
+
+    // Render the application
+    ReactDOM.render(<GEOPlatform />, document.getElementById('root'));
+  </script>
+</body>
+
+</html>

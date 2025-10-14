@@ -1,4 +1,3 @@
-import { Link, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   Network,
@@ -14,52 +13,53 @@ import {
   ShoppingBag,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useUIStore } from '@/store'
 
 const navigation = [
   {
     name: 'Overview',
     items: [
-      { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-      { name: 'Analytics', href: '/analytics', icon: BarChart3 },
+      { name: 'Dashboard', page: 'dashboard', icon: LayoutDashboard },
+      { name: 'Analytics', page: 'analytics', icon: BarChart3 },
     ],
   },
   {
     name: 'GEO',
     items: [
-      { name: 'Knowledge Graph', href: '/geo/knowledge-graph', icon: Network },
-      { name: 'Data Collection', href: '/geo/data-collection', icon: Database },
-      { name: 'Content Generation', href: '/geo/content-generation', icon: FileText },
-      { name: 'Content Library', href: '/geo/content-library', icon: FileText },
+      { name: 'Knowledge Graph', page: 'knowledge-graph', icon: Network },
+      { name: 'Data Collection', page: 'data-collection', icon: Database },
+      { name: 'Content Generation', page: 'content-generation', icon: FileText },
+      { name: 'Content Library', page: 'content-library', icon: FileText },
     ],
   },
   {
     name: 'GEO Workflow',
     items: [
-      { name: 'Workflow Dashboard', href: '/geo-workflow/dashboard', icon: TrendingUp },
-      { name: 'On-site GEO', href: '/geo-workflow/onsite', icon: Target },
-      { name: 'Off-site GEO', href: '/geo-workflow/offsite', icon: Globe },
-      { name: 'GEO Monitoring', href: '/geo-workflow/monitoring', icon: LineChart },
+      { name: 'Workflow Dashboard', page: 'workflow-dashboard', icon: TrendingUp },
+      { name: 'On-site GEO', page: 'onsite-geo', icon: Target },
+      { name: 'Off-site GEO', page: 'offsite-geo', icon: Globe },
+      { name: 'GEO Monitoring', page: 'geo-monitoring', icon: LineChart },
     ],
   },
   {
     name: 'Commerce',
     items: [
-      { name: 'Shopify GEO', href: '/geo-workflow/sweetnight-shopify', icon: ShoppingBag },
-      { name: 'Amazon GEO', href: '/geo-workflow/amazon', icon: ShoppingCart },
-      { name: 'Orders', href: '/commerce/orders', icon: ShoppingCart },
-      { name: 'Offers', href: '/commerce/offers', icon: ShoppingCart },
+      { name: 'Shopify GEO', page: 'shopify-geo', icon: ShoppingBag },
+      { name: 'Amazon GEO', page: 'amazon-geo', icon: ShoppingCart },
+      { name: 'Orders', page: 'orders', icon: ShoppingCart },
+      { name: 'Offers', page: 'offers', icon: ShoppingCart },
     ],
   },
   {
     name: 'System',
     items: [
-      { name: 'Settings', href: '/settings', icon: Settings },
+      { name: 'Settings', page: 'settings', icon: Settings },
     ],
   },
 ]
 
 export function Sidebar() {
-  const location = useLocation()
+  const { currentPage, setCurrentPage } = useUIStore()
 
   return (
     <aside className="w-64 border-r bg-gray-50 h-full overflow-y-auto">
@@ -71,13 +71,13 @@ export function Sidebar() {
             </h3>
             <ul className="space-y-1">
               {section.items.map((item) => {
-                const isActive = location.pathname === item.href
+                const isActive = currentPage === item.page
                 return (
                   <li key={item.name}>
-                    <Link
-                      to={item.href}
+                    <button
+                      onClick={() => setCurrentPage(item.page)}
                       className={cn(
-                        'flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                        'w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                         isActive
                           ? 'bg-primary text-primary-foreground'
                           : 'text-gray-700 hover:bg-gray-200'
@@ -85,7 +85,7 @@ export function Sidebar() {
                     >
                       <item.icon className="h-5 w-5" />
                       {item.name}
-                    </Link>
+                    </button>
                   </li>
                 )
               })}
