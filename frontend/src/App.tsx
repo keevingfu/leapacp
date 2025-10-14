@@ -1,3 +1,4 @@
+import { Routes, Route } from 'react-router-dom'
 import { MainLayout } from './layouts/MainLayout'
 import { Dashboard } from './pages/Dashboard'
 import { Analytics } from './pages/Analytics'
@@ -14,49 +15,38 @@ import { AmazonGeo } from './pages/AmazonGeo'
 import { Orders } from './pages/Orders'
 import { Offers } from './pages/Offers'
 import { Settings } from './pages/Settings'
-import { useUIStore } from './store'
 
 function App() {
-  const currentPage = useUIStore((state) => state.currentPage)
+  return (
+    <MainLayout>
+      <Routes>
+        {/* Overview Routes */}
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/analytics" element={<Analytics />} />
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'dashboard':
-        return <Dashboard />
-      case 'analytics':
-        return <Analytics />
-      case 'knowledge-graph':
-        return <KnowledgeGraph />
-      case 'data-collection':
-        return <DataCollection />
-      case 'content-generation':
-        return <ContentGeneration />
-      case 'content-library':
-        return <ContentLibrary />
-      case 'workflow-dashboard':
-        return <GeoWorkflowDashboard />
-      case 'onsite-geo':
-        return <OnsiteGeo />
-      case 'offsite-geo':
-        return <OffsiteGeo />
-      case 'geo-monitoring':
-        return <GeoMonitoring />
-      case 'shopify-geo':
-        return <SweetnightShopifyGeo />
-      case 'amazon-geo':
-        return <AmazonGeo />
-      case 'orders':
-        return <Orders />
-      case 'offers':
-        return <Offers />
-      case 'settings':
-        return <Settings />
-      default:
-        return <Dashboard />
-    }
-  }
+        {/* GEO Routes */}
+        <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
+        <Route path="/data-collection" element={<DataCollection />} />
+        <Route path="/content-generation" element={<ContentGeneration />} />
+        <Route path="/content-library" element={<ContentLibrary />} />
 
-  return <MainLayout>{renderPage()}</MainLayout>
+        {/* GEO Workflow Routes */}
+        <Route path="/geo-workflow/dashboard" element={<GeoWorkflowDashboard />} />
+        <Route path="/geo-workflow/onsite" element={<OnsiteGeo />} />
+        <Route path="/geo-workflow/offsite" element={<OffsiteGeo />} />
+        <Route path="/geo-workflow/monitoring" element={<GeoMonitoring />} />
+
+        {/* Commerce Routes */}
+        <Route path="/shopify-geo" element={<SweetnightShopifyGeo />} />
+        <Route path="/amazon-geo" element={<AmazonGeo />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/offers" element={<Offers />} />
+
+        {/* System Routes */}
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </MainLayout>
+  )
 }
 
 export default App

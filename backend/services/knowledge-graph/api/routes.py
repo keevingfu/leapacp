@@ -56,6 +56,42 @@ async def health_check(service: GraphService = Depends(get_graph_service)):
     )
 
 
+@router.get("/entities", response_model=QueryResponse)
+async def list_entities(
+    search: Optional[str] = None,
+    entity_type: Optional[str] = None,
+    limit: int = 100,
+    service: GraphService = Depends(get_graph_service)
+):
+    """
+    List all entities with optional search and filtering
+
+    Args:
+        search: Optional search text to filter entities
+        entity_type: Optional entity type filter
+        limit: Maximum number of entities to return (default: 100)
+
+    Returns:
+        QueryResponse: List of entities matching criteria
+    """
+    try:
+        results = service.search_entities(
+            entity_type=entity_type,
+            search_text=search,
+            properties=None,
+            limit=limit
+        )
+        return QueryResponse(
+            success=True,
+            message="Entities retrieved successfully",
+            results=results,
+            count=len(results)
+        )
+    except Exception as e:
+        logger.error(f"Failed to list entities: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.post("/entities", response_model=EntityResponse, status_code=status.HTTP_201_CREATED)
 async def create_entity(
     request: EntityCreateRequest,
@@ -189,6 +225,47 @@ async def delete_entity(
         message="Entity deleted successfully",
         data={"id": entity_id}
     )
+
+
+@router.get("/relationships", response_model=QueryResponse)
+async def list_relationships(
+    limit: int = 100,
+    service: GraphService = Depends(get_graph_service)
+):
+    """
+    List all relationships
+
+    Args:
+        limit: Maximum number of relationships to return (default: 100)
+
+    Returns:
+        QueryResponse: List of all relationships
+    """
+    try:
+        # Execute Cypher query to get all relationships with their nodes
+        query = """
+        MATCH (source)-[r]->(target)
+        RETURN
+            id(r) as id,
+            source.id as source_id,
+            labels(source)[0] as source_type,
+            type(r) as type,
+            target.id as target_id,
+            labels(target)[0] as target_type,
+            properties(r) as properties
+        LIMIT $limit
+        """
+        results = service.execute_cypher(query, {"limit": limit})
+
+        return QueryResponse(
+            success=True,
+            message="Relationships retrieved successfully",
+            results=results,
+            count=len(results)
+        )
+    except Exception as e:
+        logger.error(f"Failed to list relationships: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/relationships", response_model=RelationshipResponse, status_code=status.HTTP_201_CREATED)
@@ -347,4 +424,45 @@ async def search_entities(
         )
     except Exception as e:
         logger.error(f"Search failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/stats", response_model=QueryResponse)
+async def get_graph_stats(
+    service: GraphService = Depends(get_graph_service)
+):
+    """
+    Get graph statistics
+
+    Returns:
+        QueryResponse: Graph statistics including node and relationship counts
+    """
+    try:
+        # Execute Cypher queries to get stats
+        node_count_query = "MATCH (n) RETURN count(n) as total_nodes"
+        rel_count_query = "MATCH ()-[r]->() RETURN count(r) as total_relationships"
+        node_types_query = """
+        MATCH (n)
+        RETURN labels(n)[0] as type, count(*) as count
+        ORDER BY count DESC
+        """
+
+        node_count_result = service.execute_cypher(node_count_query, {})
+        rel_count_result = service.execute_cypher(rel_count_query, {})
+        node_types_result = service.execute_cypher(node_types_query, {})
+
+        stats = {
+            "total_nodes": node_count_result[0]["total_nodes"] if node_count_result else 0,
+            "total_relationships": rel_count_result[0]["total_relationships"] if rel_count_result else 0,
+            "node_types": node_types_result
+        }
+
+        return QueryResponse(
+            success=True,
+            message="Stats retrieved successfully",
+            results=[stats],
+            count=1
+        )
+    except Exception as e:
+        logger.error(f"Failed to get stats: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

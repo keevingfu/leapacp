@@ -174,7 +174,7 @@ export const graphService = {
   queries: {
     // Get product with all related entities
     getProductGraph: async (productId: string) => {
-      const cypher = `
+      const query = `
         MATCH (p:Product {id: $productId})
         OPTIONAL MATCH (p)-[r1:HAS_FEATURE]->(f:Feature)
         OPTIONAL MATCH (p)-[r2:SOLVES]->(prob:Problem)
@@ -186,26 +186,26 @@ export const graphService = {
                collect(DISTINCT {rel: r3, node: s}) as scenarios,
                collect(DISTINCT {rel: r4, node: o}) as offers
       `
-      return graphService.executeQuery({ cypher, parameters: { productId } })
+      return graphService.executeQuery({ query, params: { productId } })
     },
 
     // Get products by scenario
     getProductsByScenario: async (scenarioId: string) => {
-      const cypher = `
+      const query = `
         MATCH (s:Scenario {id: $scenarioId})<-[:APPLIES_TO]-(p:Product)
         RETURN p
       `
-      return graphService.executeQuery({ cypher, parameters: { scenarioId } })
+      return graphService.executeQuery({ query, params: { scenarioId } })
     },
 
     // Get problems solved by product
     getProblemsSolvedByProduct: async (productId: string) => {
-      const cypher = `
+      const query = `
         MATCH (p:Product {id: $productId})-[r:SOLVES]->(prob:Problem)
         RETURN prob, r.effectiveness as effectiveness
         ORDER BY r.effectiveness DESC
       `
-      return graphService.executeQuery({ cypher, parameters: { productId } })
+      return graphService.executeQuery({ query, params: { productId } })
     },
   },
 }

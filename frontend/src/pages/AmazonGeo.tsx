@@ -249,7 +249,7 @@ export function AmazonGeo() {
     <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Amazon Product Page GEO Optimization</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Amazon GEO</h1>
         <p className="text-gray-600 mt-2">
           Interactive workspace for Amazon Rufus AI optimization and product listing enhancement
         </p>

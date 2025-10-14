@@ -5,6 +5,7 @@ import type { GraphEntity, GraphRelationship } from '@/lib/api/types'
 
 // Entity type colors - matching ECharts graph-webkit-dep style
 const ENTITY_COLORS: Record<string, string> = {
+  Brand: '#6366f1',        // Indigo
   Product: '#5470c6',      // Blue
   Feature: '#91cc75',      // Green
   Problem: '#ee6666',      // Red
@@ -32,11 +33,24 @@ export function EChartsGraph({ entities, relationships }: EChartsGraphProps) {
     const nodes = entities.map((entity) => {
       const category = categories.findIndex((c) => c.name === entity.type)
 
-      // Calculate node size based on number of connections
+      // Calculate node size based on layer hierarchy
+      // Layer 0 (Brand) is largest, decreasing with each layer
+      const layer = entity.properties.layer ?? 7
+      let baseSize = 80 // Layer 0 (Brand)
+
+      if (layer === 1) baseSize = 65      // Products
+      else if (layer === 2) baseSize = 50  // Features
+      else if (layer === 3) baseSize = 40  // Pain Points
+      else if (layer === 4) baseSize = 32  // Scenarios
+      else if (layer === 5) baseSize = 25  // Personas
+      else if (layer === 6) baseSize = 20  // Values
+      else if (layer === 7) baseSize = 16  // Prompts
+
+      // Add small variation based on connections for visual interest
       const connectionCount = relationships.filter(
         (r) => r.source_id === entity.id || r.target_id === entity.id
       ).length
-      const symbolSize = Math.max(15, Math.min(50, 15 + connectionCount * 3))
+      const symbolSize = baseSize + Math.min(8, connectionCount)
 
       return {
         id: entity.id,
@@ -45,7 +59,7 @@ export function EChartsGraph({ entities, relationships }: EChartsGraphProps) {
         category,
         value: connectionCount,
         label: {
-          show: symbolSize > 25, // Only show labels for nodes with more connections
+          show: layer <= 3, // Show labels for Brand, Product, Feature, and PainPoint nodes
         },
         itemStyle: {
           color: ENTITY_COLORS[entity.type] || '#999',
@@ -168,7 +182,7 @@ export function EChartsGraph({ entities, relationships }: EChartsGraphProps) {
   return (
     <ReactECharts
       option={option}
-      style={{ height: '600px', width: '100%' }}
+      style={{ height: '800px', width: '100%' }}
       opts={{ renderer: 'canvas' }}
       notMerge={true}
       lazyUpdate={true}

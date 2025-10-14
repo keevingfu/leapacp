@@ -243,7 +243,7 @@ export function SweetnightShopifyGeo() {
     <div className="p-8 space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Shopify Product Page GEO Optimization</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Shopify GEO</h1>
         <p className="text-gray-600 mt-2">
           Interactive workspace for systematic product page optimization
         </p>

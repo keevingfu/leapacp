@@ -45,8 +45,8 @@ export interface GraphRelationship {
 }
 
 export interface GraphQueryRequest {
-  cypher: string
-  parameters?: Record<string, any>
+  query: string
+  params?: Record<string, any>
 }
 
 export interface GraphQueryResponse {

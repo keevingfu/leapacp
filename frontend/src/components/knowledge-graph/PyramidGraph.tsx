@@ -1,21 +1,34 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { Download, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { pyramidGraphData, getChildren, type PyramidNode } from '@/data/pyramid-graph-data'
 
-const LAYER_HEIGHT = 150
-const NODE_WIDTH = 160
-const NODE_HEIGHT = 60
-const NODE_SPACING_X = 20
-const NODE_SPACING_Y = 80
-const INITIAL_MAX_LAYER = 3 // Show first 3 layers initially
+const LAYER_SPACING = 120 // Vertical spacing between layers
+const NODE_SPACING_X = 140 // Horizontal spacing between nodes (increased for gaps)
+const INITIAL_MAX_LAYER = 7 // Show all 8 layers (0-7) initially
+
+// Uniform circle sizes for all nodes
+const getNodeRadius = (layer: number): number => {
+  return 30  // Same size for all circles
+}
 
 interface ExpandedState {
   [nodeId: string]: boolean
 }
 
 export function PyramidGraph() {
-  const [expandedNodes, setExpandedNodes] = useState<ExpandedState>({})
+  // Initialize all nodes as expanded
+  const initialExpandedState = useMemo(() => {
+    const expanded: ExpandedState = {}
+    pyramidGraphData.nodes.forEach(node => {
+      if (node.children && node.children.length > 0) {
+        expanded[node.id] = true
+      }
+    })
+    return expanded
+  }, [])
+
+  const [expandedNodes, setExpandedNodes] = useState<ExpandedState>(initialExpandedState)
   const [zoom, setZoom] = useState(1)
   const svgRef = useRef<SVGSVGElement>(null)
 
@@ -32,9 +45,9 @@ export function PyramidGraph() {
     const visible: PyramidNode[] = []
     const queue: string[] = []
 
-    // Start with all layer 1 nodes
+    // Start with all layer 0 nodes (Brand)
     pyramidGraphData.nodes
-      .filter((node) => node.layer === 1)
+      .filter((node) => node.layer === 0)
       .forEach((node) => queue.push(node.id))
 
     const visited = new Set<string>()
@@ -78,10 +91,10 @@ export function PyramidGraph() {
 
       // Calculate pyramid width for this layer (wider at bottom)
       const pyramidWidthMultiplier = layer / 7 + 0.3 // Gradually widen
-      const totalWidth = nodesInLayer.length * (NODE_WIDTH + NODE_SPACING_X) * pyramidWidthMultiplier
+      const totalWidth = nodesInLayer.length * NODE_SPACING_X * pyramidWidthMultiplier
 
-      const x = (nodeIndex - (nodesInLayer.length - 1) / 2) * (NODE_WIDTH + NODE_SPACING_X) * pyramidWidthMultiplier
-      const y = (layer - 1) * (NODE_HEIGHT + NODE_SPACING_Y)
+      const x = (nodeIndex - (nodesInLayer.length - 1) / 2) * NODE_SPACING_X * pyramidWidthMultiplier
+      const y = layer * LAYER_SPACING
 
       return { x, y, totalWidth }
     },
@@ -95,11 +108,12 @@ export function PyramidGraph() {
   const maxWidth = Math.max(
     ...visibleNodes.map((node) => {
       const pos = calculateNodePosition(node, visibleNodes)
-      return Math.abs(pos.x) + NODE_WIDTH / 2
+      const radius = getNodeRadius(node.layer)
+      return Math.abs(pos.x) + radius
     })
   )
   const viewBoxWidth = maxWidth * 2 + 200
-  const viewBoxHeight = maxLayer * (NODE_HEIGHT + NODE_SPACING_Y) + 200
+  const viewBoxHeight = maxLayer * LAYER_SPACING + 200
 
   // Export SVG
   const exportSVG = () => {
@@ -125,16 +139,18 @@ export function PyramidGraph() {
       if (!node.children) return
 
       const nodePos = calculateNodePosition(node, visibleNodes)
+      const nodeRadius = getNodeRadius(node.layer)
       const nodeX = nodePos.x
-      const nodeY = nodePos.y + NODE_HEIGHT
+      const nodeY = nodePos.y + nodeRadius
 
       node.children.forEach((childId) => {
         const childNode = visibleNodes.find((n) => n.id === childId)
         if (!childNode) return
 
         const childPos = calculateNodePosition(childNode, visibleNodes)
+        const childRadius = getNodeRadius(childNode.layer)
         const childX = childPos.x
-        const childY = childPos.y
+        const childY = childPos.y - childRadius
 
         // Draw curved connection
         const midY = (nodeY + childY) / 2
@@ -157,10 +173,11 @@ export function PyramidGraph() {
     return connections
   }
 
-  // Render nodes
+  // Render nodes as circles
   const renderNodes = () => {
     return visibleNodes.map((node) => {
       const pos = calculateNodePosition(node, visibleNodes)
+      const radius = getNodeRadius(node.layer)
       const hasChildren = node.children && node.children.length > 0
       const isExpanded = expandedNodes[node.id]
       const canExpand = hasChildren && node.layer < 7
@@ -168,66 +185,64 @@ export function PyramidGraph() {
       return (
         <g
           key={node.id}
-          transform={`translate(${pos.x - NODE_WIDTH / 2}, ${pos.y})`}
+          transform={`translate(${pos.x}, ${pos.y})`}
           onClick={() => canExpand && toggleNode(node.id)}
           style={{ cursor: canExpand ? 'pointer' : 'default' }}
         >
-          {/* Node background */}
-          <rect
-            width={NODE_WIDTH}
-            height={NODE_HEIGHT}
-            rx="8"
+          {/* Node circle */}
+          <circle
+            r={radius}
             fill={node.color}
             opacity="0.9"
             stroke={isExpanded ? '#ffffff' : node.color}
             strokeWidth={isExpanded ? '3' : '0'}
           />
 
-          {/* Node label */}
+          {/* Node label - display complete text */}
           <text
-            x={NODE_WIDTH / 2}
-            y={NODE_HEIGHT / 2 - 5}
+            y="4"
             textAnchor="middle"
-            fill="white"
-            fontSize="13"
+            fill="black"
+            fontSize="12"
             fontWeight="600"
           >
-            {node.label.length > 20 ? node.label.substring(0, 20) + '...' : node.label}
+            {node.label}
           </text>
 
-          {/* Layer indicator */}
-          <text
-            x={NODE_WIDTH / 2}
-            y={NODE_HEIGHT / 2 + 12}
-            textAnchor="middle"
-            fill="white"
-            fontSize="10"
-            opacity="0.8"
-          >
-            Layer {node.layer}
-          </text>
+          {/* Layer indicator (only for Brand and Products) */}
+          {node.layer <= 1 && (
+            <text
+              y="20"
+              textAnchor="middle"
+              fill="black"
+              fontSize="9"
+              opacity="0.8"
+            >
+              L{node.layer}
+            </text>
+          )}
 
           {/* Expand indicator */}
           {canExpand && (
-            <circle
-              cx={NODE_WIDTH - 15}
-              cy={15}
-              r="8"
-              fill="white"
-              opacity="0.9"
-            />
-          )}
-          {canExpand && (
-            <text
-              x={NODE_WIDTH - 15}
-              y={19}
-              textAnchor="middle"
-              fill={node.color}
-              fontSize="12"
-              fontWeight="bold"
-            >
-              {isExpanded ? '-' : '+'}
-            </text>
+            <>
+              <circle
+                cx={radius - 8}
+                cy={-radius + 8}
+                r="6"
+                fill="white"
+                opacity="0.9"
+              />
+              <text
+                x={radius - 8}
+                y={-radius + 11}
+                textAnchor="middle"
+                fill={node.color}
+                fontSize="10"
+                fontWeight="bold"
+              >
+                {isExpanded ? '-' : '+'}
+              </text>
+            </>
           )}
 
           {/* Hover tooltip */}
@@ -272,17 +287,26 @@ export function PyramidGraph() {
       <div className="absolute top-4 left-4 z-10 bg-white p-3 rounded-lg shadow-md">
         <h3 className="text-sm font-semibold mb-2">Layers</h3>
         <div className="space-y-1">
-          {pyramidGraphData.layers.map((layer) => (
-            <div key={layer.id} className="flex items-center gap-2 text-xs">
-              <div
-                className="w-4 h-4 rounded"
-                style={{ backgroundColor: layer.color }}
-              />
-              <span>{layer.name}</span>
-            </div>
-          ))}
+          {pyramidGraphData.layers.map((layer) => {
+            const layerNodeCount = pyramidGraphData.nodes.filter(n => n.layer === layer.id).length
+            return (
+              <div key={layer.id} className="flex items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-4 h-4 rounded-full"
+                    style={{ backgroundColor: layer.color }}
+                  />
+                  <span>{layer.name}</span>
+                </div>
+                <span className="text-gray-500 font-medium">{layerNodeCount}</span>
+              </div>
+            )
+          })}
         </div>
-        <p className="text-xs text-gray-500 mt-2">Click nodes with + to expand</p>
+        <div className="text-xs text-gray-500 mt-2 pt-2 border-t">
+          <div className="font-medium mb-1">Total: {pyramidGraphData.nodes.length} nodes</div>
+          <div>All layers expanded</div>
+        </div>
       </div>
 
       {/* SVG Canvas */}

@@ -17,6 +17,7 @@ import { useUIStore } from '@/store'
 
 // Entity type colors
 const ENTITY_COLORS: Record<string, string> = {
+  Brand: '#6366f1',
   Product: '#3b82f6',
   Feature: '#10b981',
   Problem: '#ef4444',
@@ -33,7 +34,7 @@ export function KnowledgeGraph() {
   const [relationshipDialogOpen, setRelationshipDialogOpen] = useState(false)
   const [queryDialogOpen, setQueryDialogOpen] = useState(false)
   const [selectedEntity, setSelectedEntity] = useState<GraphEntity | null>(null)
-  const [viewMode, setViewMode] = useState<'graph' | 'pyramid'>('pyramid') // Default to pyramid view
+  const [viewMode, setViewMode] = useState<'graph' | 'pyramid'>('graph') // Default to graph view
 
   // Local state for graph data (fallback when backend is unavailable)
   const [localEntities, setLocalEntities] = useState<GraphEntity[]>([])
@@ -201,7 +202,7 @@ export function KnowledgeGraph() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-[600px] border rounded-lg bg-gray-50">
+            <div className="h-[800px] border rounded-lg bg-gray-50">
               {viewMode === 'pyramid' ? (
                 <PyramidGraph />
               ) : entities.length === 0 ? (

@@ -50,8 +50,8 @@ export function QueryDialog({ open, onOpenChange }: QueryDialogProps) {
 
     try {
       const response = await executeMutation.mutateAsync({
-        cypher: cypherQuery,
-        parameters: {}
+        query: cypherQuery,
+        params: {}
       })
 
       if (response.success) {

@@ -162,7 +162,7 @@ export function useDeleteRelationship() {
 // Query Execution Hook
 export function useGraphQuery(request: GraphQueryRequest, enabled = true) {
   return useQuery({
-    queryKey: queryKeys.graph.query(request.cypher),
+    queryKey: queryKeys.graph.query(request.query),
     queryFn: () => graphService.executeQuery(request),
     enabled,
   })
