@@ -33,6 +33,8 @@ import {
   MousePointer,
   Eye
 } from 'lucide-react'
+// ECharts components (NEW - not replacing existing Recharts)
+import { BarChart as EChartsBar, LineChart as EChartsLine, PieChart as EChartsPie } from '@/components/charts'
 
 // Key Metrics
 const keyMetrics = [
@@ -219,7 +221,7 @@ export function Analytics() {
 
       {/* Tabs */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-7">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="platforms">Platforms</TabsTrigger>
@@ -227,6 +229,7 @@ export function Analytics() {
           <TabsTrigger value="quality">Quality</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="geographic">Geographic</TabsTrigger>
+          <TabsTrigger value="echarts">ECharts View</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -573,6 +576,88 @@ export function Analytics() {
                   <Bar dataKey="conversions" fill="#10b981" name="Conversions" />
                 </BarChart>
               </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* ECharts Tab - NEW: Added ECharts visualization without replacing existing Recharts */}
+        <TabsContent value="echarts" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>ECharts Visualization Demo</CardTitle>
+              <CardDescription>Alternative visualization using ECharts library (Recharts tabs remain unchanged)</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Monthly Citations Line Chart */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Monthly Citations Trend</h3>
+                  <EChartsLine
+                    data={citationData.map(d => ({ name: d.month, value: d.citations }))}
+                    title="Citations Over Time"
+                    xAxisLabel="Month"
+                    yAxisLabel="Citations"
+                    color="#6366f1"
+                    smooth={true}
+                    areaStyle={true}
+                    height="350px"
+                  />
+                </div>
+
+                {/* Platform Distribution Pie Chart */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Platform Distribution</h3>
+                  <EChartsPie
+                    data={platformDistribution}
+                    title="Citation Share by Platform"
+                    showLegend={true}
+                    radius={['40%', '70%']}
+                    height="350px"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Content Performance Comparison</h3>
+                <EChartsBar
+                  data={contentPerformance.map(d => ({ name: d.type, value: d.citations }))}
+                  title="Citations by Content Type"
+                  xAxisLabel="Content Type"
+                  yAxisLabel="Citations"
+                  color="#10b981"
+                  height="400px"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Revenue Trend */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Revenue Trend</h3>
+                  <EChartsLine
+                    data={roiData.map(d => ({ name: d.month, value: d.revenue }))}
+                    title="Monthly Revenue"
+                    xAxisLabel="Month"
+                    yAxisLabel="Revenue ($)"
+                    color="#10b981"
+                    smooth={true}
+                    areaStyle={true}
+                    height="350px"
+                  />
+                </div>
+
+                {/* Geographic Performance */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Geographic Performance</h3>
+                  <EChartsBar
+                    data={geographicData.map(d => ({ name: d.country, value: d.citations }))}
+                    title="Citations by Country"
+                    xAxisLabel="Country"
+                    yAxisLabel="Citations"
+                    color="#f59e0b"
+                    height="350px"
+                  />
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

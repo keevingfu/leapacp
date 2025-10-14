@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Plus, Search, Link as LinkIcon, Code, RefreshCw, Download, Loader2, Pyramid } from 'lucide-react'
+import { Plus, Search, Link as LinkIcon, Code, RefreshCw, Download, Loader2, Pyramid, Database } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useEntities, useRelationships, useGraphStats } from '@/hooks/useGraph'
 import { useImportGeoGraph } from '@/hooks/useImportGeoGraph'
@@ -93,18 +93,46 @@ export function KnowledgeGraph() {
     })
   }, [addNotification])
 
-  // Auto-load GEO graph data on page mount
+  // Auto-load demo data on page mount
   useEffect(() => {
     if (!autoLoadComplete) {
-      // Load local data immediately
+      // Load local demo data by default
       loadLocalGeoGraph()
       setAutoLoadComplete(true)
     }
   }, [autoLoadComplete, loadLocalGeoGraph])
 
   const handleRefresh = () => {
-    refetchEntities()
-    refetchRelationships()
+    if (useLocalData) {
+      // Reload local demo data
+      loadLocalGeoGraph()
+    } else {
+      // Refresh API data
+      refetchEntities()
+      refetchRelationships()
+    }
+  }
+
+  const handleSwitchDataSource = () => {
+    if (useLocalData) {
+      // Switch to API data
+      setUseLocalData(false)
+      refetchEntities()
+      refetchRelationships()
+      addNotification({
+        type: 'info',
+        title: 'Data Source Switched',
+        message: 'Now using Neo4j API data',
+      })
+    } else {
+      // Switch to local demo data
+      loadLocalGeoGraph()
+      addNotification({
+        type: 'info',
+        title: 'Data Source Switched',
+        message: 'Now using local demo data',
+      })
+    }
   }
 
   const handleImportGeoGraph = async () => {
@@ -153,8 +181,15 @@ export function KnowledgeGraph() {
             <>
               <Button
                 variant="outline"
+                onClick={handleSwitchDataSource}
+              >
+                <Database className="h-4 w-4 mr-2" />
+                {useLocalData ? 'Switch to Neo4j' : 'Switch to Demo'}
+              </Button>
+              <Button
+                variant="outline"
                 onClick={handleImportGeoGraph}
-                disabled={isImporting}
+                disabled={isImporting || !useLocalData}
               >
                 {isImporting ? (
                   <>
@@ -164,7 +199,7 @@ export function KnowledgeGraph() {
                 ) : (
                   <>
                     <Download className="h-4 w-4 mr-2" />
-                    Load GEO Demo
+                    Import to Neo4j
                   </>
                 )}
               </Button>
@@ -277,6 +312,12 @@ export function KnowledgeGraph() {
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Relationships</span>
                 <span className="font-medium">{stats?.total_relationships || relationships.length}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Data Source</span>
+                <Badge variant={useLocalData ? "secondary" : "default"} className="text-xs">
+                  {useLocalData ? "Local Demo" : "Neo4j API"}
+                </Badge>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Last Updated</span>

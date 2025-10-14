@@ -6,6 +6,7 @@ import { KnowledgeGraph } from './pages/KnowledgeGraph'
 import { DataCollection } from './pages/DataCollection'
 import { ContentGeneration } from './pages/ContentGeneration'
 import { ContentLibrary } from './pages/ContentLibrary'
+import DataPipelineMonitor from './pages/DataPipelineMonitor'
 import { GeoWorkflowDashboard } from './pages/GeoWorkflowDashboard'
 import { OnsiteGeo } from './pages/OnsiteGeo'
 import { OffsiteGeo } from './pages/OffsiteGeo'
@@ -27,6 +28,7 @@ function App() {
         {/* GEO Routes */}
         <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
         <Route path="/data-collection" element={<DataCollection />} />
+        <Route path="/data-pipeline-monitor" element={<DataPipelineMonitor />} />
         <Route path="/content-generation" element={<ContentGeneration />} />
         <Route path="/content-library" element={<ContentLibrary />} />
 

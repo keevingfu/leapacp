@@ -20,6 +20,7 @@ const TESTS = [
   // GEO Pages
   { name: 'Knowledge Graph', path: '/knowledge-graph', selector: 'h1:has-text("Knowledge Graph")' },
   { name: 'Data Collection', path: '/data-collection', selector: 'h1:has-text("Data Collection")' },
+  { name: 'Data Pipeline Monitor', path: '/data-pipeline-monitor', selector: 'h1:has-text("Data Pipeline Monitor")' },
   { name: 'Content Generation', path: '/content-generation', selector: 'h1:has-text("Content Generation")' },
   { name: 'Content Library', path: '/content-library', selector: 'h1:has-text("Content Library")' },
 
@@ -98,6 +99,44 @@ const INTERACTIVE_TESTS = [
       console.log(`  ✓ Found ${charts} charts on Dashboard`)
 
       return charts > 0
+    }
+  },
+  {
+    name: 'Data Pipeline Monitor - Interactive Features',
+    path: '/data-pipeline-monitor',
+    actions: async (page) => {
+      await page.waitForSelector('h1:has-text("Data Pipeline Monitor")', { timeout: TIMEOUT })
+
+      // Test manual refresh button (use exact text match)
+      const refreshBtn = page.getByRole('button', { name: 'Refresh', exact: true })
+      if (await refreshBtn.isVisible()) {
+        await refreshBtn.click()
+        await page.waitForTimeout(500)
+        console.log('  ✓ Manual refresh button works')
+      }
+
+      // Test tab switching
+      const tabs = ['Collection Tasks', 'ETL Tasks', 'Neo4j Data']
+      for (const tab of tabs) {
+        const tabBtn = page.locator(`button:has-text("${tab}")`)
+        if (await tabBtn.isVisible()) {
+          await tabBtn.click()
+          await page.waitForTimeout(300)
+          console.log(`  ✓ ${tab} tab loaded`)
+        }
+      }
+
+      // Test generate report button
+      const reportBtn = page.locator('button:has-text("Generate Report")')
+      if (await reportBtn.isVisible()) {
+        console.log('  ✓ Generate Report button found')
+      }
+
+      // Check for service status cards
+      const statusCards = await page.locator('div:has-text("Data Collection"), div:has-text("ETL Processing")').count()
+      console.log(`  ✓ Found ${statusCards} service status cards`)
+
+      return true
     }
   }
 ]

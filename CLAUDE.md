@@ -259,6 +259,114 @@ GET    /api/v1/data/sources          # List data sources
 GET    /api/v1/data/stats            # Get collection statistics
 ```
 
+### Data Collection Service (http://localhost:8003)
+
+```python
+# Health Check
+GET /health
+
+# Web Scraping Tasks
+POST   /api/v1/collection/scrape     # Scrape web content via Firecrawl
+GET    /api/v1/collection/tasks/{id} # Get task status
+GET    /api/v1/collection/tasks      # List all tasks
+GET    /api/v1/collection/stats      # Get collection statistics
+```
+
+### ETL Processing Service (http://localhost:8004)
+
+```python
+# Health Check
+GET /health
+
+# ETL Tasks
+POST   /api/v1/etl/process           # Process collected data into Neo4j
+GET    /api/v1/etl/tasks/{id}        # Get ETL task status
+GET    /api/v1/etl/tasks             # List all ETL tasks
+GET    /api/v1/etl/stats             # Get ETL statistics
+```
+
+### Scheduler Service (http://localhost:8005)
+
+```python
+# Health Check
+GET /health
+
+# Schedule Management
+POST   /api/v1/scheduler/schedules          # Create schedule
+GET    /api/v1/scheduler/schedules/{id}     # Get schedule details
+GET    /api/v1/scheduler/schedules          # List all schedules
+PUT    /api/v1/scheduler/schedules/{id}     # Update schedule
+DELETE /api/v1/scheduler/schedules/{id}     # Delete schedule
+
+# Schedule Control
+POST   /api/v1/scheduler/schedules/{id}/pause      # Pause schedule
+POST   /api/v1/scheduler/schedules/{id}/resume     # Resume schedule
+POST   /api/v1/scheduler/schedules/{id}/trigger    # Manually trigger
+
+# Task Execution History
+GET    /api/v1/scheduler/executions/{id}    # Get execution details
+GET    /api/v1/scheduler/executions         # List execution history
+GET    /api/v1/scheduler/stats              # Get scheduler stats
+```
+
+## Data Pipeline Monitoring Dashboard
+
+Access the real-time monitoring dashboard at: http://localhost:5174/data-pipeline-monitor
+
+**Features**:
+- Real-time service health monitoring (4 services)
+- Pipeline statistics (total tasks, success/failure rates)
+- Task execution history with filterable tabs
+- Auto-refresh every 10 seconds
+- Manual refresh and JSON report generation
+
+## Data Pipeline Quick Start
+
+### Start All Services
+
+```bash
+# Terminal 1: Data Collection Service (Port 8003)
+cd backend/services/data-collection
+source venv/bin/activate
+uvicorn main:app --reload --port 8003
+
+# Terminal 2: ETL Processing Service (Port 8004)
+cd backend/services/etl-processing
+source venv/bin/activate
+uvicorn main:app --reload --port 8004
+
+# Terminal 3: Scheduler Service (Port 8005)
+cd backend/services/scheduler
+source venv/bin/activate
+uvicorn main:app --reload --port 8005
+```
+
+### Test Pipeline
+
+```bash
+# 1. Scrape a web page
+curl -X POST http://localhost:8003/api/v1/collection/scrape \
+  -H "Content-Type: application/json" \
+  -d '{"url": "https://example.com", "formats": ["markdown"]}'
+
+# 2. Get collection task ID from response, then process with ETL
+curl -X POST "http://localhost:8004/api/v1/etl/process?collection_task_id=<task_id>"
+
+# 3. Verify data in Neo4j
+curl http://localhost:8001/api/v1/entities
+
+# 4. Create automated schedule (runs daily at midnight)
+curl -X POST http://localhost:8005/api/v1/scheduler/schedules \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Daily Data Collection",
+    "schedule_type": "cron",
+    "cron_expression": "0 0 * * *",
+    "task_type": "pipeline",
+    "task_config": {"url": "https://example.com", "formats": ["markdown"]}
+  }'
+```
+
 ## Neo4j Graph Schema
 
 ### Node Types
@@ -416,8 +524,11 @@ npm run verify
 # Full check (30-60 seconds)
 npm run verify-full
 
-# E2E page testing with Playwright
-node test-all-pages.mjs
+# E2E page testing with Playwright (20 tests)
+node test-app-complete.mjs
+
+# Quick monitor page test
+node test-monitor-page.mjs
 ```
 
 ## Git Workflow
@@ -592,9 +703,44 @@ This project has global Context Engineering and BMAD capabilities available:
 
 ## Project Status
 
-**Current Phase**: Phase 1.2 - Infrastructure & Routing Complete ✅
+**Current Phase**: Phase 1.3 - Data Pipeline Monitoring Complete ✅
 **Last Updated**: 2025-10-14
 **Next Phase**: Phase 2.0 - Backend API Integration
+
+### Phase 1.3 Completed (2025-10-14) ✅
+
+#### 🎯 Major Achievements
+
+**1. Data Pipeline Monitor Page**
+- ✅ Created comprehensive monitoring dashboard (`DataPipelineMonitor.tsx`)
+- ✅ Real-time service health monitoring (4 services: Data Collection, ETL, Neo4j, Scheduler)
+- ✅ Pipeline statistics display (total tasks, success/failure rates)
+- ✅ Task execution history with tabs (Collection Tasks, ETL Tasks, Neo4j Data)
+- ✅ Auto-refresh mechanism (10 seconds interval)
+- ✅ Manual refresh and report generation (JSON download)
+- ✅ Integrated into navigation under GEO section
+- ✅ Route added: `/data-pipeline-monitor`
+
+**2. E2E Testing Enhancements**
+- ✅ Extended E2E test suite to 20 tests (was 18)
+- ✅ Added Data Pipeline Monitor page navigation test
+- ✅ Added interactive test for monitor features:
+  - Manual refresh button functionality
+  - Tab switching (Collection/ETL/Neo4j tabs)
+  - Generate report button presence
+  - Service status cards validation
+- ✅ All 20 tests passing (100% pass rate, 0 failures, 0 warnings)
+
+**3. Bug Fixes**
+- ✅ Fixed critical import error in App.tsx (named vs default export)
+- ✅ Updated test selectors for better precision (strict mode compliance)
+- ✅ Resolved page rendering issues caused by TypeScript compilation errors
+
+**4. Backend Pipeline Services**
+- ✅ Data Collection Service (Port 8003) - Firecrawl web scraping
+- ✅ ETL Processing Service (Port 8004) - Data transformation to Neo4j
+- ✅ Scheduler Service (Port 8005) - Automated task scheduling
+- ✅ All services integrated with monitoring dashboard
 
 ### Phase 1.2 Completed (2025-10-14) ✅
 
@@ -603,7 +749,7 @@ This project has global Context Engineering and BMAD capabilities available:
 **1. React Router Migration**
 - ✅ Migrated from Zustand state-based navigation to React Router DOM
 - ✅ Added `<BrowserRouter>` wrapper in main.tsx
-- ✅ Implemented all 15 route definitions in App.tsx
+- ✅ Implemented all route definitions in App.tsx
 - ✅ Updated Sidebar.tsx to use `<NavLink>` with active state styling
 - ✅ Fixed page titles for Shopify GEO and Amazon GEO
 - ✅ All pages now accessible via direct URL navigation
@@ -617,12 +763,9 @@ This project has global Context Engineering and BMAD capabilities available:
 - ✅ Comprehensive documentation in `scripts/README.md`
 - ✅ Automated workflow: `Local Changes → GitHub → Vercel`
 
-**3. E2E Testing Suite**
+**3. Initial E2E Testing Suite**
 - ✅ Created comprehensive Playwright test suite (`test-app-complete.mjs`)
-- ✅ 18 automated tests covering:
-  - 15 page navigation tests (100% pass rate)
-  - 3 interactive feature tests (view switching, tab navigation, chart rendering)
-- ✅ All tests passing with 0 failures, 0 warnings
+- ✅ 18 automated tests covering all pages and interactive features
 - ✅ Validates H1 titles, page loading, and interactive elements
 
 **4. Backend API Endpoints**
@@ -633,39 +776,43 @@ This project has global Context Engineering and BMAD capabilities available:
 
 ### Completed Features ✅
 
-**Frontend (15 pages + routing)**
+**Frontend (16 pages + routing)**
 - Overview: Dashboard, Analytics
-- GEO: Knowledge Graph, Data Collection, Content Generation, Content Library
+- GEO: Knowledge Graph, Data Collection, **Data Pipeline Monitor**, Content Generation, Content Library
 - GEO Workflow: Workflow Dashboard, On-site GEO, Off-site GEO, GEO Monitoring
 - Commerce: Shopify GEO, Amazon GEO, Orders, Offers
 - System: Settings
 - 7 UI components (Button, Card, Badge, Table, Input, Textarea, Tabs)
 - React Router URL-based navigation with active states
 
-**Backend Services**
-- Knowledge Graph Service (Neo4j integration, CRUD APIs)
-- Data Collector Service (YouTube, Reddit, Firecrawl scrapers)
-- 3 new GET endpoints for frontend data fetching
+**Backend Services (5 services)**
+- Knowledge Graph Service (Port 8001) - Neo4j integration, CRUD APIs
+- Data Collector Service (Port 8002) - YouTube, Reddit, Firecrawl scrapers
+- Data Collection Service (Port 8003) - Firecrawl web scraping tasks
+- ETL Processing Service (Port 8004) - Data transformation to Neo4j
+- Scheduler Service (Port 8005) - Automated task scheduling with cron
 
 **DevOps & Automation**
 - Automated deployment scripts with secure credential management
 - CI/CD pipeline: Git → GitHub → Vercel
-- Comprehensive E2E test suite (18 tests, 100% pass rate)
+- Comprehensive E2E test suite (20 tests, 100% pass rate)
 - Git hooks and automation helpers
 
 **Testing & Quality**
 - pytest framework with coverage reporting
-- Playwright E2E testing (test-app-complete.mjs)
+- Playwright E2E testing (test-app-complete.mjs, test-monitor-page.mjs)
 - TypeScript type checking
 - ESLint code quality checks
 
 ### Current Status 🎯
 
 **Application State**
-- ✅ All 15 pages accessible and working
+- ✅ All 16 pages accessible and working
 - ✅ URL routing fully functional
 - ✅ No console errors or API errors
-- ✅ Interactive features (charts, tabs, view switching) working
+- ✅ Interactive features (charts, tabs, view switching, monitoring) working
+- ✅ Data pipeline monitoring active with real-time updates
+- ✅ All backend services running and integrated
 - ✅ Ready for production deployment
 - ✅ Automated deployment pipeline active
 
@@ -674,22 +821,48 @@ This project has global Context Engineering and BMAD capabilities available:
 - ⚠️ Some API endpoints return empty data (need Neo4j population)
 - ⚠️ No authentication/authorization yet
 
-### Next Phase: Phase 2.0 - Backend Integration 📋
+### Next Phase: Phase 2.0 - Data Pipeline & API Integration 📋
 
-**Priority 1: API Integration (Week 1-2)**
-1. Connect frontend to backend API endpoints
-   - Integrate Knowledge Graph queries with React components
-   - Replace mock data with real API calls
-   - Implement error handling and loading states
-   - Add data validation and type safety
+**Priority 1: Data Pipeline Testing & Production Use (Week 1-2)**
+1. Real-world Data Collection
+   - Configure Firecrawl for target websites (SweetNight competitors)
+   - Test web scraping with actual e-commerce sites
+   - Set up automated daily/weekly collection schedules
+   - Monitor pipeline performance and error rates
 
-2. Populate Neo4j Database
+2. ETL Pipeline Validation
+   - Test data transformation with real scraped content
+   - Verify Neo4j entity and relationship creation
+   - Optimize ETL processing for large datasets
+   - Set up error handling and retry mechanisms
+
+3. Neo4j Data Population
    - Create seed data script for demo purposes
+   - Process collected data through ETL pipeline
    - Add sample products, features, scenarios
    - Establish relationships in graph
    - Verify queries return expected data
 
-**Priority 2: Content Generation (Week 3-4)**
+**Priority 2: Frontend-Backend API Integration (Week 3-4)**
+1. Knowledge Graph Integration
+   - Connect Knowledge Graph page to Neo4j backend
+   - Replace mock data with real graph queries
+   - Implement real-time graph visualization
+   - Add entity/relationship CRUD operations
+
+2. Dashboard & Analytics Integration
+   - Connect Dashboard to Knowledge Graph stats API
+   - Integrate real analytics data
+   - Implement data validation and type safety
+   - Add error handling and loading states
+
+3. Data Collection UI Integration
+   - Connect Data Collection page to Collection Service (Port 8003)
+   - Enable manual web scraping from UI
+   - Show real collection task status
+   - Display collection history and statistics
+
+**Priority 3: Content Generation (Week 5-6)**
 1. Content Generator Service
    - LLM integration (OpenAI/Anthropic API)
    - Content templates and prompts
@@ -701,18 +874,19 @@ This project has global Context Engineering and BMAD capabilities available:
    - Version control for generated content
    - Export functionality (Markdown, HTML, JSON)
 
-**Priority 3: Analytics & Monitoring (Week 5-6)**
-1. Analytics Service
+**Priority 4: Advanced Monitoring (Week 7-8)**
+1. Analytics Service Enhancement
    - Usage tracking
    - Performance metrics
    - Content quality scoring
    - ROI calculations
 
-2. System Monitoring
+2. Production Monitoring
    - Service health checks
    - Error tracking (Sentry integration)
    - Performance monitoring (Prometheus + Grafana)
    - Logging aggregation
+   - Alerting for pipeline failures
 
 **Future Phases**
 

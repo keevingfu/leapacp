@@ -11,6 +11,7 @@ import {
   Globe,
   LineChart,
   ShoppingBag,
+  Activity,
 } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/lib/utils'
@@ -28,6 +29,7 @@ const navigation = [
     items: [
       { name: 'Knowledge Graph', path: '/knowledge-graph', icon: Network },
       { name: 'Data Collection', path: '/data-collection', icon: Database },
+      { name: 'Data Pipeline Monitor', path: '/data-pipeline-monitor', icon: Activity },
       { name: 'Content Generation', path: '/content-generation', icon: FileText },
       { name: 'Content Library', path: '/content-library', icon: FileText },
     ],
