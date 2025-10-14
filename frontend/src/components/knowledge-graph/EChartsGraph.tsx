@@ -140,10 +140,12 @@ export function EChartsGraph({ entities, relationships }: EChartsGraphProps) {
             },
           },
           force: {
-            repulsion: 200,       // Nodes repel each other
-            gravity: 0.1,         // Gravity towards center
-            edgeLength: [80, 150], // Edge length range
+            initLayout: 'none',      // Let force algorithm calculate from scratch
+            repulsion: 500,          // Strong repulsion for natural spread
+            gravity: 0.02,           // Very low gravity for loose organic layout
+            edgeLength: [100, 250],  // Longer edges for spacious layout
             layoutAnimation: true,
+            friction: 0.5,           // Moderate friction
           },
           lineStyle: {
             color: 'source',
