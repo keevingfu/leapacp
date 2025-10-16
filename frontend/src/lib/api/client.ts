@@ -3,7 +3,8 @@ import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios'
 import type { ApiResponse, ApiError } from './types'
 
 // API Base URL - can be configured via environment variable
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'
+// Note: Knowledge Graph Service runs on port 8001
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001/api/v1'
 
 // Create Axios instance with default configuration
 const apiClient: AxiosInstance = axios.create({
@@ -117,7 +118,9 @@ export async function apiRequest<T = any>(
       data,
       ...config,
     })
-    return response.data
+    // Response interceptor already returns response.data (the ApiResponse object)
+    // So we return the response directly without accessing .data again
+    return response as unknown as ApiResponse<T>
   } catch (error) {
     throw error
   }

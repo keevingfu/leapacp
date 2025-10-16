@@ -7,7 +7,7 @@
 
 import { chromium } from 'playwright'
 
-const BASE_URL = 'http://localhost:5174'
+const BASE_URL = 'http://localhost:5173'
 const TIMEOUT = 10000
 const SCREENSHOT_DIR = './test-screenshots'
 

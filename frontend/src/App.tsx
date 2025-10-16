@@ -1,5 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { MainLayout } from './layouts/MainLayout'
+import Login from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { Analytics } from './pages/Analytics'
 import { KnowledgeGraph } from './pages/KnowledgeGraph'
@@ -19,35 +21,48 @@ import { Settings } from './pages/Settings'
 
 function App() {
   return (
-    <MainLayout>
-      <Routes>
-        {/* Overview Routes */}
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/analytics" element={<Analytics />} />
+    <Routes>
+      {/* Public Route - Login */}
+      <Route path="/login" element={<Login />} />
 
-        {/* GEO Routes */}
-        <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
-        <Route path="/data-collection" element={<DataCollection />} />
-        <Route path="/data-pipeline-monitor" element={<DataPipelineMonitor />} />
-        <Route path="/content-generation" element={<ContentGeneration />} />
-        <Route path="/content-library" element={<ContentLibrary />} />
+      {/* Protected Routes - All app pages require authentication */}
+      <Route
+        path="/*"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <Routes>
+                {/* Overview Routes */}
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/analytics" element={<Analytics />} />
 
-        {/* GEO Workflow Routes */}
-        <Route path="/geo-workflow/dashboard" element={<GeoWorkflowDashboard />} />
-        <Route path="/geo-workflow/onsite" element={<OnsiteGeo />} />
-        <Route path="/geo-workflow/offsite" element={<OffsiteGeo />} />
-        <Route path="/geo-workflow/monitoring" element={<GeoMonitoring />} />
+                {/* GEO Routes */}
+                <Route path="/knowledge-graph" element={<KnowledgeGraph />} />
+                <Route path="/data-collection" element={<DataCollection />} />
+                <Route path="/data-pipeline-monitor" element={<DataPipelineMonitor />} />
+                <Route path="/content-generation" element={<ContentGeneration />} />
+                <Route path="/content-library" element={<ContentLibrary />} />
 
-        {/* Commerce Routes */}
-        <Route path="/shopify-geo" element={<SweetnightShopifyGeo />} />
-        <Route path="/amazon-geo" element={<AmazonGeo />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/offers" element={<Offers />} />
+                {/* GEO Workflow Routes */}
+                <Route path="/geo-workflow/dashboard" element={<GeoWorkflowDashboard />} />
+                <Route path="/geo-workflow/onsite" element={<OnsiteGeo />} />
+                <Route path="/geo-workflow/offsite" element={<OffsiteGeo />} />
+                <Route path="/geo-workflow/monitoring" element={<GeoMonitoring />} />
 
-        {/* System Routes */}
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </MainLayout>
+                {/* Commerce Routes */}
+                <Route path="/shopify-geo" element={<SweetnightShopifyGeo />} />
+                <Route path="/amazon-geo" element={<AmazonGeo />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/offers" element={<Offers />} />
+
+                {/* System Routes */}
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   )
 }
 
